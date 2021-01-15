@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "Attach to node",
+            "type": "node",
+            "request": "attach",
+            "restart": true,
+            "port": 9229
+          }
+    ]
+}

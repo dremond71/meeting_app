@@ -1,0 +1,22 @@
+{
+  "name": "meeting_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "resource-monitor-windows10": "Perfmon /Res",
+    "start-peerjs-ssl": "peerjs --port 3001 --sslkey ./certs/key.pem --sslcert ./certs/cert.pem",
+    "start": "node server.js",
+    "devStart": "nodemon --inspect-brk=9229 server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "socket.io": "^3.0.4",
+    "uuid": "^8.3.2"
+  }
+}

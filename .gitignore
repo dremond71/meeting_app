@@ -1,0 +1,5 @@
+backup/
+certs/*.pem
+env_files/
+.env
+node_modules/
