@@ -65,19 +65,26 @@ Since your are running two servers on your machine, you need to start two ngrok 
 Start an ngrok tunnel for the peerjs server port:
 
 ```sh
-ngrok http -hostname=free-meeting2.twc-kungfu.com https://localhost:3001 
+ngrok http -hostname=subdomain2.yourhost.com https://localhost:3001 
 ```
 
 Start an ngrok tunnel for the server.js port:
 
 ```sh 
-ngrok http -hostname=free-meeting.twc-kungfu.com https://localhost:443
+ngrok http -hostname=subdomain1.yourhost.com https://localhost:443
 ```
+
+Where subdomain1 and subdomain2 are defined in your ngrok account, and you uploaded your certificate to ngrok, and chose this uploaded certificate for each domain configuration.
+
+I had an actual website already, e.g.  www.myhost.com . I went in to the DNS Zone of the control panel of my website, and created two CNAME records.
+
+- subdomain1 with a value of a generated ngrok domain url provided for this domain.
+- subdomain2 with a value of a generated ngrok domain url provided for this domain.
 
 ### Modifying your .env file
 
 ```
-PEERJS_HOST = subdomain.yourhost.com
+PEERJS_HOST = subdomain2.yourhost.com
 ```
 
 where subdomain is the CNAME you defined in the DNS section of your website domain (yourhost.com).
