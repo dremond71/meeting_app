@@ -46,6 +46,14 @@ To start the main file, server.js :
 npm start
 ```
 
+### Open the web app in the browser
+
+In your browser, navigate to `https://localhost:443/videochat` .
+- You will need to accept the certificate warning. On Chrome, there should be an Advanced twistie that you can open and then select `Proceed`.
+- You will need to click on the Allow button so that browser can use the webcam and microphone.
+
+Find out your machine IP address on your internal network, and then, from another computer, connect to https://yourServerIPAddress:443/videochat (Or from a private Incognito window on the same computer. Careful, you will get microphone feedback ;)
+
 ## Using ngrok
 
 To connect to your server.js and peerjs server from a public internet address, you can use [ngrok](https://ngrok.com/) to create a tunnel from an ngrok domain (you created in your ngrok account) to the port running your server.js and the port running your peerjs server on your computer.
