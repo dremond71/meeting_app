@@ -22,7 +22,7 @@ export default {
 data: function () {
     return {
       myPeer: undefined,
-      myConnection: { id: undefined, roomId:undefined, stream: undefined, isMe: false}
+      myConnection: { id: undefined, roomId:undefined, stream: undefined, isMe: false, audioEnabled: false, videoEnabled:false}
     }
   },
 mounted () {
@@ -33,6 +33,26 @@ this.myPeer = new Peer(undefined, peerConfig);
 socket.on('user-disconnected', userId =>{
     console.log(`User disconnected: ${userId}`);
     this.deleteConnectedItemInStore(userId);
+});
+
+socket.on('user-muted-audio', userId =>{
+    console.log(`User ${userId} muted audio`);
+    this.updateAudioMutedInStore( {id: userId, enabled: false});
+});
+
+socket.on('user-unmuted-audio', userId =>{
+    console.log(`User ${userId} unmuted audio`);
+    this.updateAudioMutedInStore( {id: userId, enabled: true});
+});
+
+socket.on('user-muted-video', userId =>{
+    console.log(`User ${userId} muted video`);
+    this.updateVideoMutedInStore( {id: userId, enabled: false});
+});
+
+socket.on('user-unmuted-video', userId =>{
+    console.log(`User ${userId} unmuted video`);
+    this.updateVideoMutedInStore( {id: userId, enabled: true});
 });
 
  this.myPeer.on('open', id => {
@@ -46,6 +66,8 @@ socket.on('user-disconnected', userId =>{
 
         this.myConnection.stream = stream;
         this.myConnection.isMe = true; // mutes my video; even though muted=true doesn't show in video HTML element ;)
+        this.myConnection.audioEnabled = true;
+        this.myConnection.videoEnabled = true;
         this.addConnectedItemToStore(this.myConnection);
        
     
@@ -100,6 +122,12 @@ methods: {
     updateConnectedItemInStore(userData) {
         this.$store.dispatch('updateConnection', userData );
     },
+    updateAudioMutedInStore(data) {
+        this.$store.dispatch('updateAudioMuted', data );
+    },
+    updateVideoMutedInStore(data) {
+        this.$store.dispatch('updateVideoMuted', data );
+    },
     deleteConnectedItemInStore(userId) {
         this.$store.dispatch('deleteConnection', userId );
     },
@@ -111,7 +139,7 @@ methods: {
     },
 
     acceptNewUserStream(userId, userStream){
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: userStream, isMe: false};
+        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: userStream, isMe: false, audioEnabled:true, videoEnabled:true};
         if (!this.$store.getters.connectedContainsId(userId)){
 
             this.addConnectedItemToStore(userConnection);
@@ -128,7 +156,7 @@ methods: {
         const call = this.myPeer.call(userId,stream);
 
         // preparing most of user connection data here; but don't yet have stream
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false};
+        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true};
         
         call.on('stream', userVideoStream => {
           // have the user's stream now, so can finally add user connection data to the store.

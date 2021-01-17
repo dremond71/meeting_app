@@ -40,6 +40,29 @@ io.on('connection', socket => {
       console.log(`server.js:socket.on:disconnect:event: room: ${roomId}, userid: ${userId}`);
       socket.to(roomId).broadcast.emit('user-disconnected', userId);
     });
+
+
   });
+
+  socket.on('muted-audio',(roomId,userId)=>{
+    console.log(`server.js:socket.on:muted-audio:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-muted-audio', userId);
+  });
+
+  socket.on('unmuted-audio',(roomId,userId)=>{
+    console.log(`server.js:socket.on:unmuted-audio:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-unmuted-audio', userId);
+  });
+
+  socket.on('muted-video',(roomId,userId)=>{
+    console.log(`server.js:socket.on:muted-video:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-muted-video', userId);
+  });
+
+  socket.on('unmuted-video',(roomId,userId)=>{
+    console.log(`server.js:socket.on:unmuted-video:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-unmuted-video', userId);
+  });
+
 });
 server.listen(443);

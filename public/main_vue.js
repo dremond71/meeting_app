@@ -42,10 +42,40 @@ const store = new Vuex.Store({
                existingConnection.stream = connectedItem.stream;
            }
            else {
-            console.log(`Could not find/update id ${connectedItem.id} in store`);
+            console.log(`Could not find id ${connectedItem.id} in store`);
            }
 
          },
+         updateAudioEnabled (state, data) {
+           
+            // update audio track state for a userId
+            const existingConnection = state.connectedList.find( item => {
+                return item.id === data.id;
+           } );
+           if (existingConnection){
+               //console.log(`updating id ${data.id}'s audio track enabled state to store`);
+               existingConnection.audioEnabled = data.enabled;
+           }
+           else {
+            console.log(`Could not find id ${data.id} in store`);
+           }
+
+         },
+         updateVideoEnabled (state, data) {
+           
+            // update video track state for a userId
+            const existingConnection = state.connectedList.find( item => {
+                return item.id === data.id;
+           } );
+           if (existingConnection){
+               //console.log(`updating id ${data.id}'s video track enabled state to store`);
+               existingConnection.videoEnabled = data.enabled;
+           }
+           else {
+            console.log(`Could not find id ${data.id} in store`);
+           }
+
+         },                  
          deleteConnected (state, userId) {
             const foundIndex = state.connectedList.findIndex( item => {
                 return item.id === userId;
@@ -70,6 +100,13 @@ const store = new Vuex.Store({
        updateConnection(context, connectedItem) {
         context.commit('updateConnected', connectedItem);
        },
+       updateAudioMuted(context, data) {
+        context.commit('updateAudioEnabled', data);
+       },
+       updateVideoMuted(context, data) {
+        context.commit('updateVideoEnabled', data);
+       },
+
        deleteConnection(context, userId) {
         context.commit('deleteConnected', userId);
        },
