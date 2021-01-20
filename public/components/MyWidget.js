@@ -7,8 +7,8 @@ export default {
   <div>
       <video v-bind:id="connectedItem.id" v-bind:muted="connectedItem.isMe"></video>
       <div class="w3-bar w3-center">
-        <button v-bind:class="audioClasses" v-on:click="toggleAudio" v-bind:disabled="!connectedItem.isMe">{{ audioButtonText}}</button>
-        <button v-bind:class="videoClasses" v-on:click="toggleVideo" v-bind:disabled="!connectedItem.isMe">{{ videoButtonText}}</button>
+        <button v-bind:class="audioClasses" v-on:click="toggleAudio" v-bind:disabled="!connectedItem.isMe">{{ audioButtonText}} <i v-bind:class="audioIconClass"></i> </button>
+        <button v-bind:class="videoClasses" v-on:click="toggleVideo" v-bind:disabled="!connectedItem.isMe">{{ videoButtonText}} <i v-bind:class="videoIconClass"></i> </button>
       </div>
   </div>   
 </div>`,
@@ -40,12 +40,20 @@ computed: {
         // }
         return classes;
       },
+      audioIconClass () {
+        return  this.connectedItem.audioEnabled ? 'bi bi-mic-fill' : 'bi-mic-mute-fill'; 
+    },
+
+    videoIconClass () {
+        return  this.connectedItem.videoEnabled ? 'bi bi-camera-video-fill' : 'bi bi-camera-video-off-fill'; 
+    },    
+
     audioButtonText () {
-        return  this.connectedItem.audioEnabled ? 'Audio (ON)' : 'Audio (OFF)'; 
+        return  this.connectedItem.audioEnabled ? 'Mic (on)' : 'Mic (off)'; 
     },
 
     videoButtonText () {
-        return this.connectedItem.videoEnabled ? 'Video (ON)' : 'Video (OFF)'; 
+        return this.connectedItem.videoEnabled ? 'Camera (on)' : 'Camera (off)'; 
     }
 },
 methods: {

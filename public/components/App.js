@@ -9,14 +9,18 @@ export default {
         VideoGrid 
     },
     template: `
-<div class="">
+<div>
 
-<div class="w3-panel w3-topbar w3-bottombar w3-border-blue w3-pale-blue">
-<h1 align="center">{{ product }}</h1>
+<div class="w3-container w3-blue">
+<h1 align="center"><b>{{ product }}</b></h1>
 <p align="center"><b>{{ description }}</b></p>
 </div>
     <NavBar></NavBar>
     <VideoGrid></VideoGrid>
+
+    <div class="w3-container w3-blue"  style="position: fixed; bottom: 0; width: 100%;">
+      <h5>  </h5>
+    </div>    
 </div>`,
 
 data: function () {
