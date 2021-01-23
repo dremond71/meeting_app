@@ -1,12 +1,13 @@
 import NavBar from './NavBar.js';
 import VideoGrid from './VideoGrid.js';
-
+import BottomBar from './BottomBar.js';
 
 export default {
     name: 'App',
     components: {
         NavBar,
-        VideoGrid 
+        VideoGrid,
+        BottomBar 
     },
     template: `
 <div>
@@ -17,10 +18,8 @@ export default {
 </div>
     <NavBar></NavBar>
     <VideoGrid></VideoGrid>
-
-    <div class="w3-container w3-blue"  style="position: fixed; bottom: 0; width: 100%;">
-      <h5>  </h5>
-    </div>    
+    <BottomBar></BottomBar>
+ 
 </div>`,
 
 data: function () {

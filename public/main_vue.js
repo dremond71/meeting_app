@@ -23,6 +23,13 @@ const store = new Vuex.Store({
 
             };
         },
+        myConnectedItem:(state) => {
+
+            return state.connectedList.find( item => {
+                return item.isMe === true;
+           } );
+        },        
+        
 
     },
     mutations: {

@@ -30,6 +30,14 @@ Both the peerjs server and server.js will be running in https mode and will requ
 Follow the instructions in [Creating SSL Certificate and Key](./certs/readme.md) to create these two files.
 
 
+### Get Dependencies
+
+In the meeting_app directory, type:
+
+```sh
+npm install
+```
+
 ### Start the peerjs server
 
 In a windows command window, in the meeting_app directory:
