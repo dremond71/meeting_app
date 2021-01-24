@@ -13,7 +13,7 @@ export default {
 props: ['rowData'],
 computed: {
     connectedItems () {
-        console.log(`rowData.id:${this.rowData.id}, rowData.content:${JSON.stringify(this.rowData.content,null,2)}`);
+       // console.log(`rowData.id:${this.rowData.id}, rowData.content:${JSON.stringify(this.rowData.content,null,2)}`);
         return this.rowData.content;
     }
 }

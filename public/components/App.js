@@ -25,12 +25,12 @@ export default {
 data: function () {
     return {
       myPeer: undefined,
-      myConnection: { id: undefined, roomId:undefined, stream: undefined, isMe: false, audioEnabled: false, videoEnabled:false}
+      myConnection: { id: undefined, roomId:undefined, stream: undefined, isMe: false, audioEnabled: false, videoEnabled:false, sharing:false, call:undefined}
     }
   },
 mounted () {
 
-console.log(`\npeer config\n${JSON.stringify(peerConfig,null,2)}\n`);
+//console.log(`\npeer config\n${JSON.stringify(peerConfig,null,2)}\n`);
 this.myPeer = new Peer(undefined, peerConfig);
    
 socket.on('user-disconnected', userId =>{
@@ -85,7 +85,7 @@ socket.on('user-unmuted-video', userId =>{
                 
                 setTimeout(() => {
                     console.log(`this.Peer.on:call:event:stream:event ${call.peer}`);
-                    this.acceptNewUserStream(call.peer,userVideoStream);
+                    this.acceptNewUserStream(call,userVideoStream);
                 }, 2000);
     
             });
@@ -141,8 +141,12 @@ methods: {
         });
     },
 
-    acceptNewUserStream(userId, userStream){
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: userStream, isMe: false, audioEnabled:true, videoEnabled:true};
+    acceptNewUserStream(call, userStream){
+        // need to accept call as a parameter since we need to store the actual call
+        // in order to help with screen sharing. In this case, we need to replace
+        // webcam/microphone stream with sharing stream to all connected users.
+        const userId = call.peer;
+        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: userStream, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
         if (!this.$store.getters.connectedContainsId(userId)){
 
             this.addConnectedItemToStore(userConnection);
@@ -159,7 +163,7 @@ methods: {
         const call = this.myPeer.call(userId,stream);
 
         // preparing most of user connection data here; but don't yet have stream
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true};
+        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:undefined};
         
         call.on('stream', userVideoStream => {
           // have the user's stream now, so can finally add user connection data to the store.

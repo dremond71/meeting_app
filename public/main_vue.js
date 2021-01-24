@@ -3,10 +3,14 @@ import App from './components/App.js';
 
 const store = new Vuex.Store({
     state: {
-        product:`Meet-Free` ,
+       product:`Meet-Free` ,
        description:'Free Video-conferencing App',
        connectedList : [],
-       infoBarMessage:"  "
+       infoBarMessage:"  ",
+       sharingTemp : {
+        shareStream: undefined,
+        originalUserStream: undefined
+       }
        
     },
     getters: {
@@ -34,7 +38,7 @@ const store = new Vuex.Store({
     },
     mutations: {
         addConnected (state, connectedItem) {
-           console.log(`adding id ${connectedItem.id} to store`);
+           //console.log(`adding id ${connectedItem.id} to store`);
            state.connectedList.push(connectedItem);
            state.infoBarMessage = `User ${connectedItem.id} has joined`;
         },
@@ -45,7 +49,7 @@ const store = new Vuex.Store({
                 return item.id === connectedItem.id;
            } );
            if (existingConnection){
-               console.log(`updating id ${connectedItem.id} to store`);
+               //console.log(`updating id ${connectedItem.id} to store`);
                existingConnection.stream = connectedItem.stream;
            }
            else {
@@ -90,13 +94,55 @@ const store = new Vuex.Store({
             if ( foundIndex > -1){
                 // remove 1 item from the array at the given index
                 state.connectedList.splice(foundIndex,1);
-                console.log(`Deleted id ${userId} in store`);
+                //console.log(`Deleted id ${userId} in store`);
                 state.infoBarMessage = `User ${userId.id} has left`;
             } 
             else {
                 console.log(`Could not find/delete id ${userId} in store`);
             }
-         }
+         },
+         startSharingSomething (state, shareStream) {
+           
+            const myInfo = state.connectedList.find( item => {
+                return item.isMe === true;
+            } );
+
+            if (myInfo){
+                myInfo.sharing = true;
+                // save original webcam/microphone stream
+                state.sharingTemp.originalUserStream = myInfo.stream;
+                // store my shared stream here
+                state.sharingTemp.shareStream = shareStream;
+                myInfo.stream = shareStream;
+            }
+
+            // need to call all peers to replace my existing stream
+            //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
+         },    
+         stopSharingSomething(state) {
+
+            const myInfo = state.connectedList.find( item => {
+                return item.isMe === true;
+            } );
+
+            if (myInfo){
+                myInfo.sharing = false;
+                // restore my webcam/mic stream
+                myInfo.stream = state.sharingTemp.originalUserStream; 
+                state.sharingTemp.originalUserStream = undefined;
+                try {
+                    const tracks = state.sharingTemp.shareStream.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
+                catch(err) {
+                       console.log(`Error closing stream`);
+                }
+                state.sharingTemp.shareStream = undefined;
+            }
+
+            // need to call all peers to replace my existing stream
+            //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
+         }     
          
       },
     
@@ -113,10 +159,16 @@ const store = new Vuex.Store({
        updateVideoMuted(context, data) {
         context.commit('updateVideoEnabled', data);
        },
-
        deleteConnection(context, userId) {
         context.commit('deleteConnected', userId);
        },
+       startSharing(context, shareStream) {
+        context.commit('startSharingSomething', shareStream);
+       },
+       stopSharing(context) {
+        context.commit('stopSharingSomething');
+       },
+
     }
 
 });
