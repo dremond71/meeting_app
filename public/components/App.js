@@ -163,7 +163,7 @@ methods: {
         const call = this.myPeer.call(userId,stream);
 
         // preparing most of user connection data here; but don't yet have stream
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:undefined};
+        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
         
         call.on('stream', userVideoStream => {
           // have the user's stream now, so can finally add user connection data to the store.

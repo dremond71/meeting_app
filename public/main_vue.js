@@ -1,6 +1,37 @@
 import App from './components/App.js';
 
 
+function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
+            
+    if (peersListExcludingMe && (peersListExcludingMe.length>0) ) {
+
+        console.log(`There are peers to contact : ${peersListExcludingMe.length}`);
+
+        // this should be sharing stream
+        const mediaStream = newStream;
+
+        for(const aPeer of peersListExcludingMe) {
+
+            const sendersList = aPeer.call?.peerConnection?.getSenders();
+            sendersList.map( (sender) => {
+                if(sender.track.kind == "audio") {
+                    if(mediaStream.getAudioTracks().length > 0){
+                        sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+                    }
+                }
+                if(sender.track.kind == "video") {
+                    if(mediaStream.getVideoTracks().length > 0){
+                        sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+                    }
+                }
+            });
+  
+        } //for 
+
+    } // there are peers
+
+}
+
 const store = new Vuex.Store({
     state: {
        product:`Meet-Free` ,
@@ -114,10 +145,18 @@ const store = new Vuex.Store({
                 // store my shared stream here
                 state.sharingTemp.shareStream = shareStream;
                 myInfo.stream = shareStream;
+
+                // need to call all peers to replace my existing stream
+                //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
+                const peersListExcludingMe = state.connectedList.filter( item => {
+                    return item.isMe === false;
+                } );
+
+                propagateNewStreamToOthers(myInfo.stream, peersListExcludingMe);
+
             }
 
-            // need to call all peers to replace my existing stream
-            //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
+            
          },    
          stopSharingSomething(state) {
 
@@ -138,10 +177,17 @@ const store = new Vuex.Store({
                        console.log(`Error closing stream`);
                 }
                 state.sharingTemp.shareStream = undefined;
+
+                // need to call all peers to replace my existing stream
+                //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
+                const peersListExcludingMe = state.connectedList.filter( item => {
+                    return item.isMe === false;
+                } );
+
+                propagateNewStreamToOthers(myInfo.stream, peersListExcludingMe);
+
             }
 
-            // need to call all peers to replace my existing stream
-            //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
          }     
          
       },
@@ -169,7 +215,7 @@ const store = new Vuex.Store({
         context.commit('stopSharingSomething');
        },
 
-    }
+    },
 
 });
 
