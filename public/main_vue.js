@@ -58,8 +58,14 @@ const store = new Vuex.Store({
 
             };
         },
-        myConnectedItem:(state) => {
 
+        somebodySharing:(state) => {
+            return state.connectedList.find( connectedItem => {
+                return connectedItem.sharing === true;
+           } );
+        },
+
+        myConnectedItem:(state) => {
             return state.connectedList.find( item => {
                 return item.isMe === true;
            } );
@@ -117,7 +123,23 @@ const store = new Vuex.Store({
             console.log(`Could not find id ${data.id} in store`);
            }
 
-         },                  
+         },
+         
+         updateWhichPersonIsSharing(state, data) {
+            
+           const existingConnection = state.connectedList.find( item => {
+                return item.id === data.id;
+           } );
+           if (existingConnection){
+               existingConnection.sharing = data.enabled;
+           }
+           else {
+            console.log(`Could not find id ${data.id} in store`);
+           }
+
+         },
+         
+         
          deleteConnected (state, userId) {
             const foundIndex = state.connectedList.findIndex( item => {
                 return item.id === userId;
@@ -154,6 +176,7 @@ const store = new Vuex.Store({
 
                 propagateNewStreamToOthers(myInfo.stream, peersListExcludingMe);
 
+                socket.emit('starting-share', myInfo.roomId,myInfo.id);
             }
 
             
@@ -186,6 +209,7 @@ const store = new Vuex.Store({
 
                 propagateNewStreamToOthers(myInfo.stream, peersListExcludingMe);
 
+                socket.emit('stopping-share', myInfo.roomId,myInfo.id);
             }
 
          }     
@@ -204,6 +228,9 @@ const store = new Vuex.Store({
        },
        updateVideoMuted(context, data) {
         context.commit('updateVideoEnabled', data);
+       },
+       updateWhoIsSharing(context, data) {
+        context.commit('updateWhichPersonIsSharing', data);
        },
        deleteConnection(context, userId) {
         context.commit('deleteConnected', userId);

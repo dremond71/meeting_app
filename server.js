@@ -64,5 +64,15 @@ io.on('connection', socket => {
     socket.to(roomId).broadcast.emit('user-unmuted-video', userId);
   });
 
+  socket.on('starting-share',(roomId,userId)=>{
+    console.log(`server.js:socket.on:starting-share:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-starting-share', userId);
+  });
+
+  socket.on('stopping-share',(roomId,userId)=>{
+    console.log(`server.js:socket.on:stopping-share:event: room: ${roomId}, userid: ${userId}`);
+    socket.to(roomId).broadcast.emit('user-stopping-share', userId);
+  });
+
 });
 server.listen(443);

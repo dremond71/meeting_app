@@ -1,25 +1,28 @@
 import NavBar from './NavBar.js';
 import VideoGrid from './VideoGrid.js';
 import BottomBar from './BottomBar.js';
+import ShareArea from './ShareArea.js';
 
 export default {
     name: 'App',
     components: {
         NavBar,
+        ShareArea,
         VideoGrid,
         BottomBar 
     },
     template: `
-<div>
+<div style="background-color:#f0f0f0;">
 
-<div class="w3-container w3-blue">
-<h1 align="center"><b>{{ product }}</b></h1>
-<p align="center"><b>{{ description }}</b></p>
-</div>
+    <div class="w3-container w3-blue">
+    <h1 align="center"><b>{{ product }}</b></h1>
+    <p align="center"><b>{{ description }}</b></p>
+    </div>
     <NavBar></NavBar>
+    <ShareArea></ShareArea>
     <VideoGrid></VideoGrid>
     <BottomBar></BottomBar>
- 
+    
 </div>`,
 
 data: function () {
@@ -56,6 +59,16 @@ socket.on('user-muted-video', userId =>{
 socket.on('user-unmuted-video', userId =>{
     console.log(`User ${userId} unmuted video`);
     this.updateVideoMutedInStore( {id: userId, enabled: true});
+});
+
+socket.on('user-starting-share', userId =>{
+    console.log(`User ${userId} sharing screen`);
+    this.updateWhoIsSharingInStore( {id: userId, enabled: true});
+});
+
+socket.on('user-stopping-share', userId =>{
+    console.log(`User ${userId} stopped sharing screen`);
+    this.updateWhoIsSharingInStore( {id: userId, enabled: false});
 });
 
  this.myPeer.on('open', id => {
@@ -130,6 +143,9 @@ methods: {
     },
     updateVideoMutedInStore(data) {
         this.$store.dispatch('updateVideoMuted', data );
+    },
+    updateWhoIsSharingInStore(data) {
+        this.$store.dispatch('updateWhoIsSharing', data );
     },
     deleteConnectedItemInStore(userId) {
         this.$store.dispatch('deleteConnection', userId );

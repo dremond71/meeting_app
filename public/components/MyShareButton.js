@@ -3,15 +3,27 @@ export default {
     components: {
     },
     template:  `
-    <button class="w3-button w3-round-xxlarge  w3-light-blue w3-margin-left" v-on:click="toggleSharing">{{ sharingButtonText}} </button>
+    <button class="w3-button w3-round-xxlarge  w3-light-blue w3-margin-left" v-on:click="toggleSharing"  v-bind:disabled="isDisabled">{{ sharingButtonText}} </button>
     `,
     props: ['connectedItem'],
     computed: {
         sharingButtonText () {
             return  this.connectedItem.sharing ? 'Sharing' : 'Share Screen'; 
-        },   
+        },
+        isDisabled() {
+
+          const personSharing = this.$store.getters.somebodySharing;
+          let value = false;
+          if (personSharing) {
+             if (!personSharing.isMe){
+                 value = true;
+             }
+          }
+          return value;
+       },          
     },
     methods: {
+  
         async toggleSharing () {
             
             if (this.connectedItem.sharing){
@@ -22,7 +34,7 @@ export default {
                 await this.startCapture();}
             
         },
-        async startCapture(displayMediaOptions) {
+        async startCapture() {
             let captureStream = null;
           
             const gdmOptions = {

@@ -7,11 +7,15 @@ export default {
     },
     template: `
 <div>
-  <div id="video-grid" style="height:100vh;background-color:#f0f0f0;">
+  <div v-if="show" id="video-grid" style="height:100vh;background-color:#f0f0f0;">
    <GridRow v-for="rowData in rowDataList"  v-bind:key="rowData.id"  v-bind:rowData="rowData"/>
   </div>
 </div>`,
 computed: {
+  show() {
+    // don't show participants when someone is sharing
+    return this.$store.getters.somebodySharing ? false : true;
+},
     rowDataList () {
        
         // array in store
