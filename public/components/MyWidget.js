@@ -5,7 +5,8 @@ export default {
     template: `
 <div class="w3-col m3 w3-margin" >
   <div>
-      <video v-bind:id="connectedItem.id" v-bind:muted="connectedItem.isMe"></video>
+      <img src="./components/icons/screenShareIcon.png" v-if="isSharingScreen"></src>
+      <video v-if="isNotSharingScreen" v-bind:id="connectedItem.id" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode"></video>
       <div class="w3-bar w3-center">
         <div>
           <i v-bind:class="audioIconClass" ></i>
@@ -17,7 +18,7 @@ export default {
       </div>
   </div>   
 </div>`,
-props: ['connectedItem'],
+props: ['connectedItem','carouselMode'],
 mounted () {
    this.mounted = true;
    this.setVideoSrc();
@@ -47,6 +48,12 @@ computed: {
        
         return  this.connectedItem.videoEnabled ? 'bi bi-camera-video-fill' : 'bi bi-camera-video-off-fill' ; 
     },    
+    isSharingScreen() {
+      return this.connectedItem.sharing;
+    },
+    isNotSharingScreen() {
+      return !this.connectedItem.sharing;
+    },
 
 },
 methods : {

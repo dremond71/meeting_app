@@ -12,6 +12,10 @@ export default {
         },
         isDisabled() {
 
+          // don't allow sharing unless there are 2 people
+          if ( this.$store.getters.connected.length < 2)
+             return true;
+
           const personSharing = this.$store.getters.somebodySharing;
           let value = false;
           if (personSharing) {
