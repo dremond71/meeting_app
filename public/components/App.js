@@ -2,6 +2,7 @@ import NavBar from './NavBar.js';
 import VideoGrid from './VideoGrid.js';
 import BottomBar from './BottomBar.js';
 import ShareArea from './ShareArea.js';
+import SidePanel from './SidePanel.js';
 
 export default {
     name: 'App',
@@ -9,18 +10,29 @@ export default {
         NavBar,
         ShareArea,
         VideoGrid,
-        BottomBar 
+        BottomBar,
+        SidePanel 
     },
     template: `
 <div style="background-color:#f0f0f0;">
 
     <div class="w3-container w3-blue">
-    <h1 align="center"><b>{{ product }}</b></h1>
-    <p align="center"><b>{{ description }}</b></p>
+      <h1 align="center"><b>{{ product }}</b></h1>
+      <p align="center"><b>{{ description }}</b></p>
     </div>
     <NavBar></NavBar>
-    <ShareArea></ShareArea>
-    <VideoGrid></VideoGrid>
+
+    <div class="w3-row">
+      <div class="w3-col m10">
+         <ShareArea></ShareArea>
+         <VideoGrid></VideoGrid>
+      </div>
+
+      <div class="w3-col m2">
+        <SidePanel></SidePanel>
+      </div>
+     </div>
+
     <BottomBar></BottomBar>
     
 </div>`,

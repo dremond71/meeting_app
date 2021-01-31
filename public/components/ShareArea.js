@@ -9,7 +9,6 @@ export default {
     },
     template: `
 <div>
-    <Carousel v-if="showCarousel" v-bind:connectedItems="itemsForCarousel"></Carousel>
     <ShareScreen v-if="someoneSharing" v-bind:connectedItem="sharedItem"></ShareScreen>
 </div>
 `,
@@ -29,4 +28,5 @@ computed: {
     }
 },
 
+// <Carousel v-if="showCarousel" v-bind:connectedItems="itemsForCarousel"></Carousel>
 }
