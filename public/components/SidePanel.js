@@ -1,19 +1,25 @@
 
-import Carousel2 from './Carousel2.js';
+import Carousel from './Carousel.js';
 import ChatArea from './ChatArea.js';
 export default {
     name: 'SidePanel',
     components: {
-     Carousel2,
+     Carousel,
      ChatArea   
     },
     template: `
     <div>
-      <Carousel2></Carousel2>
+      <Carousel v-if="someoneSharing"></Carousel>
       <ChatArea></ChatArea>
     </div>
 `,
 computed: {
+  someoneSharing() {   
+    return this.sharedItem ? true: false;
+},
+sharedItem() {
+  return this.$store.getters.somebodySharing;
+},
 }
 
 }

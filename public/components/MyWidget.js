@@ -25,7 +25,6 @@ mounted () {
 },
 data: function () {
   return {
-    stream: undefined,
     mounted: false,
     videoMetaDataListener: undefined
   }

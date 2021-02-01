@@ -17,7 +17,7 @@ computed: {
         return this.rowData.content;
     },
     isCarouselMode() {
-        return false;
+        return 'no';
     }
 }
 }

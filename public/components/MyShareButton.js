@@ -8,7 +8,7 @@ export default {
     props: ['connectedItem'],
     computed: {
         sharingButtonText () {
-            return  this.connectedItem.sharing ? 'Sharing' : 'Share Screen'; 
+            return  this.connectedItem.sharing ? 'Stop Sharing' : 'Share Screen'; 
         },
         isDisabled() {
 

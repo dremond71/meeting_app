@@ -5,6 +5,7 @@ export default {
     template: `
 <div class="w3-center">
  <p>Chat Area</p>
+ <p>(Coming soon)</p>
 </div>`,
 computed: {
     message () {

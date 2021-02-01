@@ -3,9 +3,10 @@ export default {
     components: {
     },
     template: `
-<div style="background-color:#f0f0f0;">
+<div class="w3-center" style="background-color:#f0f0f0;">
     <p class="w3-center">{{whoIsSharing}}</p>
-    <video id="shared"></video>
+       <video id="shared"></video>
+       <p>  </p>
 </div>
 `,
 mounted () {
@@ -22,6 +23,9 @@ computed: {
 
     whoIsSharing() {
         return `${this.connectedItem.id} is sharing`;
+    },
+    heightWidthStyle() {
+        return "height:50%;width:50%;margin:0;padding:0;";
     }
 },
 methods : {
