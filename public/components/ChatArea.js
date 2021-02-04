@@ -1,16 +1,19 @@
+import ChatSearchBar from './ChatSearchBar.js';
+import ParticipantList from './ParticipantList.js';
+
 export default {
     name: 'ChatArea',
     components: {
+        ChatSearchBar,
+        ParticipantList
     },
     template: `
-<div class="w3-center">
- <p>Chat Area</p>
- <p>(Coming soon)</p>
+<div class="w3-center w3-container">
+  <ChatSearchBar></ChatSearchBar>
+  <ParticipantList></ParticipantList>
 </div>`,
 computed: {
-    message () {
-        return this.$store.state.infoBarMessage;
-    }
+   
 }
 
 }

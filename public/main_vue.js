@@ -48,6 +48,11 @@ const store = new Vuex.Store({
         connected:(state) => {
             return state.connectedList;
         },
+        everyoneButMe:(state) => {
+            return state.connectedList.filter( connectedItem => {
+                return connectedItem.isMe === false;
+           } );
+        },        
         connectedContainsId: function(state) {
             // return a function so we can provide our own parameter
             return function(id){
