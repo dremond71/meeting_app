@@ -100,3 +100,8 @@ PEERJS_HOST = subdomain2.yourhost.com
 where subdomain is the CNAME you defined in the DNS section of your website domain (yourhost.com).
 
 There is no need to specify PEERJS_PORT; otherwise the front end, defined in room.ejs, will not be able to connect to peerjs. Not sure why.
+
+### Open EACH url in your browser; Second one first
+
+- You need to hostname=subdomain2.yourhost.com in your browser and accept your certificate and proceed via the Advanced tab
+- You need to hostname=subdomain.yourhost.com in your browser and accept your certificate and proceed via the Advanced tab
