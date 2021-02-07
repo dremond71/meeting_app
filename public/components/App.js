@@ -53,6 +53,12 @@ socket.on('user-disconnected', (userId, userName) =>{
     this.deleteConnectedItemInStore(userId);
 });
 
+socket.on('user-name', (userId, userName) =>{
+    console.log(`User ${userId} has user name ${userName}`);
+    this.updateUserNameInStore( {id: userId, userName: userName});
+});
+
+
 socket.on('user-muted-audio', userId =>{
     console.log(`User ${userId} muted audio`);
     this.updateAudioMutedInStore( {id: userId, enabled: false});
@@ -142,6 +148,47 @@ computed: {
     }
 },
 methods: {
+
+    broadcastMyStatusAttributes() {
+
+       const myConnection = this.$store.getters.myConnectedItem;
+
+       // my audio status
+       if (myConnection.audioEnabled){
+        console.log(`broadcasting I am unmuted...`);
+         socket.emit('unmuted-audio', myConnection.roomId,myConnection.id);
+       }
+       else {
+        console.log(`broadcasting I am muted...`);
+         socket.emit('muted-audio', myConnection.roomId,myConnection.id); 
+       }
+
+       // my video status
+       if (myConnection.videoEnabled){
+        console.log(`broadcasting my video is unmuted...`);
+         socket.emit('unmuted-video', myConnection.roomId,myConnection.id);
+       }
+       else {
+        console.log(`broadcasting my video is muted...`);
+         socket.emit('muted-video', myConnection.roomId,myConnection.id); 
+       }
+
+       // my share status
+       if (myConnection.sharing){
+        console.log(`broadcasting i am sharing...`);
+         socket.emit('starting-share', myConnection.roomId,myConnection.id);
+       }
+       else {
+        console.log(`broadcasting i am not sharing...`);
+         socket.emit('stopping-share', myConnection.roomId,myConnection.id); 
+       }
+
+       // my user name
+       if (myConnection.userName){
+          socket.emit('broadcast-username', myConnection.roomId,myConnection.id,myConnection.userName);
+       }
+      
+    },
     increment () {
         this.$store.dispatch('incrementAsync');
     },
@@ -150,6 +197,9 @@ methods: {
     },
     updateConnectedItemInStore(userData) {
         this.$store.dispatch('updateConnection', userData );
+    },
+    updateUserNameInStore(data) {
+        this.$store.dispatch('updateTheUserName', data );
     },
     updateAudioMutedInStore(data) {
         this.$store.dispatch('updateAudioMuted', data );
@@ -175,7 +225,9 @@ methods: {
         // in order to help with screen sharing. In this case, we need to replace
         // webcam/microphone stream with sharing stream to all connected users.
         const userId = call.peer;
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: userStream, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
+        
+        // until user broadcast the user name, we will give it empty string.
+        const userConnection =  { id: userId, userName:'...', roomId: this.myConnection.roomId, stream: userStream, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
         if (!this.$store.getters.connectedContainsId(userId)){
 
             this.addConnectedItemToStore(userConnection);
@@ -207,6 +259,13 @@ methods: {
             this.updateConnectedItemInStore(userConnection);
           }
           
+          // let all user's know of my different status attributes
+          // a delay is required
+          setTimeout(() => {
+            this.broadcastMyStatusAttributes();
+        }, 5000);
+
+
         });
 
         // // never called

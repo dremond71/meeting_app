@@ -9,7 +9,7 @@ export default {
     template: `
 <div v-if="show" class="w3-container">
   <h2>{{ title }}</h2>
-  <ParticipantChat v-for="item in connectedItems"  v-bind:key="item.id"  v-bind:connectedItem="item">{{ item.id }}</ParticipantChat>
+  <ParticipantChat v-for="item in connectedItems"  v-bind:key="item.id"  v-bind:connectedItem="item"></ParticipantChat>
 </div>`,
 computed: {
     title() {

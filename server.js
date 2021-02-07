@@ -37,19 +37,12 @@ app.get('/login', (req,res) => {
   
 });
 
-// app.post('/username-post', (req, res) => {
-//   const userName = req.body.username
-//   console.log(`In /username-post ${userName}`);
-//   res.redirect(`/meeting/videochat?username=${userName}`);
- 
-// });
-
-app.get('/:room', (req,res) => {
+app.get('/videochat', (req,res) => {
   
   const userName = req.query.username;
   console.log(`/room and userName is ${userName}`);
   
-    res.render('room', { roomId: req.params.room, sslKey: key, sslCert: cert,peerjsHost: peerjsHost, peerjsPort: peerjsPort, userName: userName});
+    res.render('room', { roomId: 'videochat', sslKey: key, sslCert: cert,peerjsHost: peerjsHost, peerjsPort: peerjsPort, userName: userName});
  
   
   
@@ -68,6 +61,11 @@ io.on('connection', socket => {
     });
 
 
+  });
+
+  socket.on('broadcast-username',(roomId,userId, userName)=>{
+    console.log(`server.js:socket.on:broadcast-username:event: room: ${roomId}, userid: ${userId}, userName: ${userName}`);
+    socket.to(roomId).broadcast.emit('user-name', userId, userName);
   });
 
   socket.on('muted-audio',(roomId,userId)=>{

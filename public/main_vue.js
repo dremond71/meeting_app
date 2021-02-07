@@ -99,6 +99,21 @@ const store = new Vuex.Store({
            }
 
          },
+         updateUserName (state, data) {
+           
+            // update user name for a userId
+            const existingConnection = state.connectedList.find( item => {
+                return item.id === data.id;
+           } );
+           if (existingConnection){
+               
+               existingConnection.userName = data.userName;
+           }
+           else {
+            console.log(`Could not find id ${data.id} in store`);
+           }
+
+         },         
          updateAudioEnabled (state, data) {
            
             // update audio track state for a userId
@@ -227,6 +242,9 @@ const store = new Vuex.Store({
        },
        updateConnection(context, connectedItem) {
         context.commit('updateConnected', connectedItem);
+       },
+       updateTheUserName(context, data) {
+        context.commit('updateUserName', data);
        },
        updateAudioMuted(context, data) {
         context.commit('updateAudioEnabled', data);
