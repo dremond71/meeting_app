@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const fs = require('fs');
+
 const key = fs.readFileSync('./certs/key.pem');
 const cert = fs.readFileSync('./certs/cert.pem');
 
@@ -11,6 +12,10 @@ const peerjsPort = process.env.PEERJS_PORT || '';
 const express = require('express');
 const https = require('https');
 const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 const server = https.createServer({key: key, cert: cert }, app);
 
 const io = require('socket.io')(server);
@@ -22,23 +27,44 @@ app.use(express.static('public'));
 
 app.get('/', (req,res) => {
    //res.redirect(`/${uuidv4()}`);
-   res.redirect(`/videochat`);
+   //res.redirect(`/videochat`);
+   res.redirect(`/login`);
+   
 });
 
+app.get('/login', (req,res) => {
+  res.render('login');
+  
+});
+
+// app.post('/username-post', (req, res) => {
+//   const userName = req.body.username
+//   console.log(`In /username-post ${userName}`);
+//   res.redirect(`/meeting/videochat?username=${userName}`);
+ 
+// });
+
 app.get('/:room', (req,res) => {
-  res.render('room', { roomId: req.params.room, sslKey: key, sslCert: cert,peerjsHost: peerjsHost, peerjsPort: peerjsPort});
+  
+  const userName = req.query.username;
+  console.log(`/room and userName is ${userName}`);
+  
+    res.render('room', { roomId: req.params.room, sslKey: key, sslCert: cert,peerjsHost: peerjsHost, peerjsPort: peerjsPort, userName: userName});
+ 
+  
+  
 });
 
 io.on('connection', socket => {
-  socket.on('join-room', (roomId,userId) => {
+  socket.on('join-room', (roomId,userId,userName) => {
     
-    console.log(`server.js:socket.on:join-room:event: room: ${roomId}, userid: ${userId}`);
+    console.log(`server.js:socket.on:join-room:event: room: ${roomId}, userid: ${userId}, userName:${userName}`);
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit('user-connected', userId);
+    socket.to(roomId).broadcast.emit('user-connected', userId, userName);
     socket.on('disconnect',()=>{
      
-      console.log(`server.js:socket.on:disconnect:event: room: ${roomId}, userid: ${userId}`);
-      socket.to(roomId).broadcast.emit('user-disconnected', userId);
+      console.log(`server.js:socket.on:disconnect:event: room: ${roomId}, userid: ${userId}, user name ${userName}`);
+      socket.to(roomId).broadcast.emit('user-disconnected', userId, userName);
     });
 
 

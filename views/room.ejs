@@ -22,6 +22,9 @@
         const SSL_CERT = `<%= sslCert  %>`;
         const PEERJS_HOST = `<%= peerjsHost  %>`;
         const PEERJS_PORT = `<%= peerjsPort  %>`;
+        const USER_NAME = `<%= userName  %>`;
+
+        console.log(`In room.ejs => USER_NAME=${USER_NAME}`);
 
         const peerConfig = {
             host: PEERJS_HOST,

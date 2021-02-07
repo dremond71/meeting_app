@@ -18,7 +18,7 @@ data: function () {
   },
 computed: {
     name () {
-        return this.connectedItem.id;
+        return this.connectedItem.userName ? this.connectedItem.userName : this.connectedItem.id;
     },
     sectionClasses() {
         let someClasses = "w3-container w3-border w3-margin-bottom";

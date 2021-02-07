@@ -40,7 +40,7 @@ export default {
 data: function () {
     return {
       myPeer: undefined,
-      myConnection: { id: undefined, roomId:undefined, stream: undefined, isMe: false, audioEnabled: false, videoEnabled:false, sharing:false, call:undefined}
+      myConnection: { id: undefined, userName: undefined, roomId:undefined, stream: undefined, isMe: false, audioEnabled: false, videoEnabled:false, sharing:false, call:undefined}
     }
   },
 mounted () {
@@ -48,8 +48,8 @@ mounted () {
 //console.log(`\npeer config\n${JSON.stringify(peerConfig,null,2)}\n`);
 this.myPeer = new Peer(undefined, peerConfig);
    
-socket.on('user-disconnected', userId =>{
-    console.log(`User disconnected: ${userId}`);
+socket.on('user-disconnected', (userId, userName) =>{
+    console.log(`User disconnected: id ${userId}, user name ${userName} `);
     this.deleteConnectedItemInStore(userId);
 });
 
@@ -84,10 +84,11 @@ socket.on('user-stopping-share', userId =>{
 });
 
  this.myPeer.on('open', id => {
-    console.log(`myPeer.on: user ${id} joining room ${ROOM_ID}`);
+    console.log(`myPeer.on: user ${id}, user name '${USER_NAME}' joining room ${ROOM_ID}`);
     this.myConnection.id = id;
+    this.myConnection.userName = USER_NAME;
     this.myConnection.roomId = ROOM_ID;
-    socket.emit('join-room', ROOM_ID, id);
+    socket.emit('join-room', ROOM_ID, id,USER_NAME);
 
     // START MEDIA
     navigator.mediaDevices.getUserMedia({video:true, audio:true}).then( stream => {
@@ -116,11 +117,11 @@ socket.on('user-stopping-share', userId =>{
             });
         });
     
-        socket.on('user-connected', userId =>{            
+        socket.on('user-connected', (userId,userName) =>{            
             setTimeout(() => {
-            console.log(`app.js"socket.on:user-connected:event: Send my stream to user ${userId}`);
+            console.log(`app.js"socket.on:user-connected:event: Send my stream to user ${userId}, user name ${userName}`);
             // user joined
-            this.sendMyStreamToNewUserAndAcceptUserStream(userId, stream);
+            this.sendMyStreamToNewUserAndAcceptUserStream(userId, userName, stream);
         }, 2000);
         });
     
@@ -184,14 +185,14 @@ methods: {
               this.updateConnectedItemInStore(userConnection);
           }
     },
-    sendMyStreamToNewUserAndAcceptUserStream(userId, stream){
+    sendMyStreamToNewUserAndAcceptUserStream(userId, userName, stream){
         
-        console.log(`sendMyStreamToNewUserAndAcceptUserStream ${userId}`);
+        console.log(`sendMyStreamToNewUserAndAcceptUserStream ${userId}, ${userName}`);
         // sending my stream to a user through a call
         const call = this.myPeer.call(userId,stream);
 
         // preparing most of user connection data here; but don't yet have stream
-        const userConnection =  { id: userId, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
+        const userConnection =  { id: userId, userName: userName, roomId: this.myConnection.roomId, stream: undefined, isMe: false, audioEnabled:true, videoEnabled:true, sharing:false,call:call};
         
         call.on('stream', userVideoStream => {
           // have the user's stream now, so can finally add user connection data to the store.
