@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+    <title>Meeting Lobby</title>
+</head>
+
+<body>
+
+    <div style="background-color:#f0f0f0;height:100vh;">
+        <div class="w3-container w3-blue">
+            <h1 align="center"><b>Meet-Free</b></h1>
+            <p align="center"><b>Free video-conferencing App</b></p>
+        </div>
+
+        <div class="w3-container w3-blue w3-center">
+            <h2>Lobby</h2>
+        </div>
+
+        <div class="w3-cell-row w3-margin-top">
+            <div class="w3-container w3-cell" style="width:40%"></div>
+            <div class="w3-container w3-cell w3-cell-middle">
+                <form class="" method="GET" action="/videochat">
+                    <div class="w3-center">Specify a user name for yourself</div>
+                    <div class="w3-center">before joining the meeting</div>
+                    <label class="w3-margin-top" style="text-align:center;display:block;"><strong>User
+                            name</strong></label>
+                    <input class="w3-input w3-border" type="text" name="username" required="" maxlength="15"
+                        style="width:300px;text-align:center;display:block;" autocomplete="off">
+
+                    <button type="submit" class="w3-button w3-padding w3-blue w3-margin-top"
+                        style="width:120px;margin-left:80px;">Join Meeting</button>
+
+
+                </form>
+
+            </div>
+            <div class="w3-container w3-cell w3-cell-bottom" style="width:40%"></div>
+        </div>
+
+
+        <div class="w3-bar w3-center w3-blue w3-padding" style="position: fixed; bottom: 0; width: 100%;"></div>
+    </div>
+
+
+</body>
+
+
+</html>

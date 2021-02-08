@@ -2,6 +2,10 @@ import MyAudioButton from './MyAudioButton.js';
 import MyVideoButton from './MyVideoButton.js';
 import MyShareButton from './MyShareButton.js';
 
+/**
+ * NOTE: Close Button that executes 'window.close()' is not allowed
+ *       in Chrome unless the script actually opened it.
+ */
 export default {
     name: 'BottomBar',
     components: {

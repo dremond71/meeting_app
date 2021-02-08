@@ -4,10 +4,10 @@ export default {
     components: {
     },
     template: `
-<div class="w3-container w3-border w3-margin-top">
-    <div  class="w3-panel w3-blue w3-round-xlarge" v-on:click="toggle">{{ name }}</div>
+<div class="w3-container  w3-border w3-round-large w3-margin-top">
+    <div  class="w3-panel w3-blue w3-round-large" v-on:click="toggle">{{ name }}</div>
     <div id="Demo1" v-bind:class="sectionClasses">
-    The contents are for {{ name }}
+    The contents are for {{ name }}. Chat not fully implemented yet.
     </div>
 </div>`,
 props: ['connectedItem'],

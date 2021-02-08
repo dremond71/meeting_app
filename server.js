@@ -27,13 +27,12 @@ app.use(express.static('public'));
 
 app.get('/', (req,res) => {
    //res.redirect(`/${uuidv4()}`);
-   //res.redirect(`/videochat`);
-   res.redirect(`/login`);
+   res.redirect(`/lobby`);
    
 });
 
-app.get('/login', (req,res) => {
-  res.render('login');
+app.get('/lobby', (req,res) => {
+  res.render('lobby');
   
 });
 
