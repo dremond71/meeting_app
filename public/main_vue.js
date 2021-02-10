@@ -32,6 +32,18 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
 
 }
 
+function closeStream(someStream) {
+   try {
+    const tracks = someStream.getTracks();
+    tracks.forEach(track => track.stop());
+    someStream = undefined;
+    console.log(`stopped tracks of stream and set it to undefined`);
+   }
+   catch(error){
+       console.log(error);
+   }
+}
+
 const store = new Vuex.Store({
     state: {
        product:`Meet-Free` ,
@@ -80,12 +92,12 @@ const store = new Vuex.Store({
     },
     mutations: {
         addConnected (state, connectedItem) {
-           //console.log(`adding id ${connectedItem.id} to store`);
+           console.log(`adding id ${connectedItem.id} to store`);
            state.connectedList.push(connectedItem);
            state.infoBarMessage = `User ${connectedItem.id} has joined`;
         },
         updateConnected (state, connectedItem) {
-           
+            console.log(`updating id ${connectedItem.id} in store`);
             // update a stream for a userId
             const existingConnection = state.connectedList.find( item => {
                 return item.id === connectedItem.id;
@@ -161,14 +173,47 @@ const store = new Vuex.Store({
          
          
          deleteConnected (state, userId) {
+             console.log(`main_vuejs:deleteConnected() userId:${userId}`);
             const foundIndex = state.connectedList.findIndex( item => {
                 return item.id === userId;
             });
             if ( foundIndex > -1){
+                let connectionItem = state.connectedList[foundIndex]; 
+
                 // remove 1 item from the array at the given index
                 state.connectedList.splice(foundIndex,1);
-                //console.log(`Deleted id ${userId} in store`);
-                state.infoBarMessage = `User ${userId.id} has left`;
+               
+                // clean up after deleted item
+                if (connectionItem) {
+                    try {
+                        // close the call
+                        if (connectionItem.call){
+                            connectionItem.call.close();
+                        }
+
+                        // delete their stream
+                        if (connectionItem.stream){
+                         closeStream(connectionItem.stream);
+                        }
+ 
+                        // clean up a temp object which may contain
+                        // their original stream and possibly a
+                        // sharing stream
+                        if (connectionItem.sharingTemp) {
+                             if (connectionItem.sharingTemp.originalUserStream) {
+                                 closeStream(connectionItem.sharingTemp.originalUserStream);
+                             }
+                             if (connectionItem.sharingTemp.shareStream) {
+                                 closeStream(connectionItem.sharingTemp.shareStream);
+                             }
+                        }
+                        connectionItem = undefined;
+                    }
+                    catch(error){
+                      console.log(error);
+                    }
+                } 
+                
             } 
             else {
                 console.log(`Could not find/delete id ${userId} in store`);

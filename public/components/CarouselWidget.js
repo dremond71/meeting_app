@@ -67,25 +67,29 @@ methods : {
       // find the video element in the DOM
       const theVideoElement = document.getElementById(this.videoId);
       
-      // attach a stream to the video element
-      theVideoElement.srcObject = this.connectedItem.stream;
-      
-      // create a handler function for the video element
-      const handler = () => {
-        theVideoElement.play();
-      };
+      if (theVideoElement){
 
-      // remove the previous handler if any
-      if (this.videoMetaDataListener){
-        theVideoElement.removeEventListener('loadedmetadata', this.videoMetaDataListener );
-        this.videoMetaDataListener = undefined;
+        // attach a stream to the video element
+        theVideoElement.srcObject = this.connectedItem.stream;
+        
+        // create a handler function for the video element
+        const handler = () => {
+          theVideoElement.play();
+        };
+
+        // remove the previous handler if any
+        if (this.videoMetaDataListener){
+          theVideoElement.removeEventListener('loadedmetadata', this.videoMetaDataListener );
+          this.videoMetaDataListener = undefined;
+        }
+
+        // keep a reference to the handler function for possible deletion later
+        this.videoMetaDataListener = handler;
+
+        // attach the handler function to the video element
+        theVideoElement.addEventListener('loadedmetadata', handler );
+
       }
-
-      // keep a reference to the handler function for possible deletion later
-      this.videoMetaDataListener = handler;
-
-      // attach the handler function to the video element
-      theVideoElement.addEventListener('loadedmetadata', handler );
     }
 
    }

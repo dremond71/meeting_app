@@ -22,7 +22,7 @@ mounted () {
 computed: {
 
     whoIsSharing() {
-        return `${this.connectedItem.id} is sharing`;
+        return `${this.connectedItem.userName} is sharing`;
     },
     heightWidthStyle() {
         return "height:50%;width:50%;margin:0;padding:0;";
