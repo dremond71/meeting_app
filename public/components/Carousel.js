@@ -1,11 +1,11 @@
 import CarouselWidget from './CarouselWidget.js';
 
 export default {
-    name: 'Carousel',
-    components: {
-        CarouselWidget
-    },
-    template: `
+  name: 'Carousel',
+  components: {
+    CarouselWidget,
+  },
+  template: `
 <div class="w3-center">
 
     <button class="w3-button w3-margin-top w3-margin-bottom" v-on:click="moveUp" v-bind:disabled="upDisabled">
@@ -23,76 +23,71 @@ export default {
 
 </div>
 `,
-data: function () {
+  data: function () {
     return {
       rowIndex: 0,
       maxContentLimit: 4,
-      contentLength: 0
-    }
+      contentLength: 0,
+    };
   },
-computed: {
+  computed: {
     isCarouselMode() {
-        return 'yes';
+      return 'yes';
     },
     upDisabled() {
-        return (this.rowIndex === 0);
+      return this.rowIndex === 0;
     },
     downDisabled() {
-        return (this.rowIndex === this.contentLength - 1);
-    },  
-    carouselContent () {
-       
-        console.log(`In carouselContent`);
-        // array in store
-        const originalArray =  this.$store.getters.connected;
-
-        // need to break a long array into separate arrays of max length of maxContentLimit.
-        const rowDataArray = [];
-        let tempArray=[];
-        let rowIdCounter=1;
-        for( let i=0; i < originalArray.length; i++){
-
-          tempArray.push( originalArray[i]);
-
-           if ( (tempArray.length == this.maxContentLimit) || (i == originalArray.length - 1) ){
-            rowDataArray.push( { id: rowIdCounter++, content: tempArray});
-            tempArray=[];
-           }
-           
-        }
-        
-        this.contentLength = rowDataArray.length;
-        // safety check for rowIndex
-        if ( (this.rowIndex < 0) || (this.rowIndex > (rowDataArray.length-1)) ) {
-            this.rowIndex = 0;
-        }
-
-        const dataToReturn = rowDataArray.length == 0 ? [] : rowDataArray[this.rowIndex].content; 
-        return dataToReturn;
-  
+      return this.rowIndex === this.contentLength - 1;
     },
-},
-methods: {
-    moveUp () {
-        console.log(`Move Up!`);
-        if (this.rowIndex > 0){
-            this.rowIndex--;
-        }
-        else {
-            console.log(`Already at lower index`);
-        }
+    carouselContent() {
+      console.log(`In carouselContent`);
+      // array in store
+      const originalArray = this.$store.getters.connected;
 
-    },
-    moveDown () {
-        console.log(`Move Down!`);
-        if (this.rowIndex < this.contentLength - 1){
-            this.rowIndex++;
-        }
-        else {
-            console.log(`Already at upper index`);
-        }
+      // need to break a long array into separate arrays of max length of maxContentLimit.
+      const rowDataArray = [];
+      let tempArray = [];
+      let rowIdCounter = 1;
+      for (let i = 0; i < originalArray.length; i++) {
+        tempArray.push(originalArray[i]);
 
+        if (
+          tempArray.length == this.maxContentLimit ||
+          i == originalArray.length - 1
+        ) {
+          rowDataArray.push({ id: rowIdCounter++, content: tempArray });
+          tempArray = [];
+        }
+      }
+
+      this.contentLength = rowDataArray.length;
+      // safety check for rowIndex
+      if (this.rowIndex < 0 || this.rowIndex > rowDataArray.length - 1) {
+        this.rowIndex = 0;
+      }
+
+      const dataToReturn =
+        rowDataArray.length == 0 ? [] : rowDataArray[this.rowIndex].content;
+      return dataToReturn;
     },
- 
-}
-}
+  },
+  methods: {
+    moveUp() {
+      console.log(`Move Up!`);
+      if (this.rowIndex > 0) {
+        this.rowIndex--;
+      } else {
+        console.log(`Already at lower index`);
+      }
+    },
+    moveDown() {
+      console.log(`Move Down!`);
+      if (this.rowIndex < this.contentLength - 1) {
+        this.rowIndex++;
+      } else {
+        console.log(`Already at upper index`);
+      }
+    },
+  },
+};

@@ -1,15 +1,13 @@
 export default {
-    name: 'InfoBar',
-    components: {
-    },
-    template: `
+  name: 'InfoBar',
+  components: {},
+  template: `
 <div class="">
   {{ message }}
 </div>`,
-computed: {
-    message () {
-        return this.$store.state.infoBarMessage;
-    }
-}
-
-}
+  computed: {
+    message() {
+      return this.$store.state.infoBarMessage;
+    },
+  },
+};

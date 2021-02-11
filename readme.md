@@ -9,6 +9,7 @@ Inspired by the YouTube tutorial [How To Create A Video Chat App With WebRTC](ht
 ## Setup
 
 ### Create .env file
+
 In the root directory of the project, create a `.env` file.
 
 Enter the following values in the file:
@@ -22,13 +23,11 @@ These values are used to run server.js when you want computers on your home netw
 
 Later, if you want to connect to your server.js with a public internet address using [ngrok](https://ngrok.com/) , see [Using ngrok](#using-ngrok). But for now, let's just get you set up for running for use on your home network.
 
-
 ### Create cert.pem and key.pem files
 
 Both the peerjs server and server.js will be running in https mode and will require cert.pem and key.pem files to be present in the meeting_app/certs directory.
 
 Follow the instructions in [Creating SSL Certificate and Key](./certs/readme.md) to create these two files.
-
 
 ### Get Dependencies
 
@@ -59,6 +58,7 @@ npm start
 ### Open the web app in the browser
 
 In your browser, navigate to `https://localhost:443/videochat` .
+
 - You will need to accept the certificate warning. On Chrome, there should be an Advanced twistie that you can open and then select `Proceed`.
 - You will need to click on the Allow button so that browser can use the webcam and microphone.
 
@@ -75,18 +75,18 @@ Since your are running two servers on your machine, you need to start two ngrok 
 Start an ngrok tunnel for the peerjs server port:
 
 ```sh
-ngrok http -hostname=subdomain2.yourhost.com https://localhost:3001 
+ngrok http -hostname=subdomain2.yourhost.com https://localhost:3001
 ```
 
 Start an ngrok tunnel for the server.js port:
 
-```sh 
+```sh
 ngrok http -hostname=subdomain1.yourhost.com https://localhost:443
 ```
 
 Where subdomain1 and subdomain2 are defined in your ngrok account, and you uploaded your certificate to ngrok, and chose this uploaded certificate for each domain configuration.
 
-I had an actual website already, e.g.  www.myhost.com . I went in to the DNS Zone of the control panel of my website, and created two CNAME records.
+I had an actual website already, e.g. www.myhost.com . I went in to the DNS Zone of the control panel of my website, and created two CNAME records.
 
 - subdomain1 with a value of a generated ngrok domain url provided for this domain.
 - subdomain2 with a value of a generated ngrok domain url provided for this domain.
