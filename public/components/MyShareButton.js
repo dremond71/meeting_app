@@ -2,10 +2,25 @@ export default {
   name: 'MyShareButton',
   components: {},
   template: `
-    <button class="w3-button w3-round-xxlarge  w3-light-blue w3-margin-left" v-on:click="toggleSharing"  v-bind:disabled="isDisabled">{{ sharingButtonText}} </button>
+    <button v-if="show" class="w3-button w3-round-xxlarge  w3-light-blue w3-margin-left" v-on:click="toggleSharing"  v-bind:disabled="isDisabled">{{ sharingButtonText}} </button>
     `,
   props: ['connectedItem'],
   computed: {
+    isMobile() {
+      // https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    show() {
+      return !this.isMobile;
+    },
     sharingButtonText() {
       return this.connectedItem.sharing ? 'Stop Sharing' : 'Share Screen';
     },
