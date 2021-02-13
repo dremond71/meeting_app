@@ -4,6 +4,27 @@ import BottomBar from './BottomBar.js';
 import ShareArea from './ShareArea.js';
 import SidePanel from './SidePanel.js';
 
+function playSound(url) {
+  try {
+    const myAudioElement = new Audio(url);
+    myAudioElement.addEventListener('canplaythrough', (event) => {
+      myAudioElement.play();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function playSound_JoinMeeting() {
+  const url = './components/sounds/join1.mp3';
+  playSound(url);
+}
+
+function playSound_LeaveMeeting() {
+  const url = './components/sounds/leave1.mp3';
+  playSound(url);
+}
+
 export default {
   name: 'App',
   components: {
@@ -58,6 +79,7 @@ export default {
 
     socket.on('user-disconnected', (userId, userName) => {
       console.log(`User disconnected: id ${userId}, user name ${userName} `);
+      playSound_LeaveMeeting();
       this.deleteConnectedItemInStore(userId);
     });
 
@@ -132,6 +154,7 @@ export default {
           });
 
           socket.on('user-connected', (userId, userName) => {
+            playSound_JoinMeeting();
             setTimeout(() => {
               console.log(
                 `app.js"socket.on:user-connected:event: Send my stream to user ${userId}, user name ${userName}`
