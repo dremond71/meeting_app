@@ -40,6 +40,7 @@ const store = new Vuex.Store({
   state: {
     product: `Meet-Free`,
     description: 'Free Video-conferencing App',
+    peersWithoutStream: new Map(),
     connectedList: [],
     infoBarMessage: '  ',
     sharingTemp: {
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    peersWithNoStream: (state) => {
+      return state.peersWithoutStream;
+    },
     connected: (state) => {
       return state.connectedList;
     },
@@ -78,6 +82,20 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
+    addPeerWithoutStream(state, data) {
+      const key = `${data.id}_${data.roomId}`;
+      state.peersWithoutStream.set(key, {
+        id: data.id,
+        roomId: data.roomId,
+        userName: data.userName,
+      });
+    },
+    removePeerWithoutStream(state, data) {
+      const key = `${data.id}_${data.roomId}`;
+      if (state.peersWithoutStream.has(key)) {
+        state.peersWithoutStream.delete(key);
+      }
+    },
     addConnected(state, connectedItem) {
       console.log(`adding id ${connectedItem.id} to store`);
       state.connectedList.push(connectedItem);
@@ -243,6 +261,12 @@ const store = new Vuex.Store({
   },
 
   actions: {
+    addPeerWithoutStreamAction(context, data) {
+      context.commit('addPeerWithoutStream', data);
+    },
+    removePeerWithoutStreamAction(context, data) {
+      context.commit('removePeerWithoutStream', data);
+    },
     addConnection(context, connectedItem) {
       context.commit('addConnected', connectedItem);
     },

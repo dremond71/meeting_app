@@ -75,10 +75,48 @@ export default {
     };
   },
   mounted() {
+    // needed for function below
+    const component_this = this;
+
+    /**
+     * This function helps to connect to users who joined the room
+     * but spent too much time dealing with browser's 'Allow camera and mic'
+     * dialog, that they missed my call which passes my stream.
+     * So find these people and send them my stream :)
+     */
+    function whoNeedsACallFromMe() {
+      const peersWithNoStreamMap =
+        component_this.$store.getters.peersWithNoStream;
+      for (let [key, value] of peersWithNoStreamMap) {
+        console.log(
+          `whoNeedsACallFromMe => id: ${value.id}, user name: ${value.userName} in room: ${value.roomId} with my stream`
+        );
+        // TODO check if I need to send shareStream instead here.
+        component_this.sendMyStreamToNewUserAndAcceptUserStream(
+          value.id,
+          value.userName,
+          component_this.myConnection.stream
+        );
+      }
+    }
+
+    // every 8 seconds, call the function above
+    setInterval(whoNeedsACallFromMe, 8000);
+
     this.myPeer = new Peer(undefined, peerConfig);
 
     socket.on('user-disconnected', (userId, userName) => {
       console.log(`User disconnected: id ${userId}, user name ${userName} `);
+
+      // let's keep track of connected users to help keep track of
+      // whether or not they received our stream.
+      // Sometimes there's too much of a delay when other user
+      // is dealing with the browser's 'Allow Camera and Microphone'
+      this.removePeerWithoutStreamActionInStore({
+        id: userId,
+        roomId: this.myConnection.roomId,
+      });
+
       playSound_LeaveMeeting();
       this.deleteConnectedItemInStore(userId);
     });
@@ -154,6 +192,16 @@ export default {
           });
 
           socket.on('user-connected', (userId, userName) => {
+            // let's keep track of connected users to help keep track of
+            // whether or not they received our stream.
+            // Sometimes there's too much of a delay when other user
+            // is dealing with the browser's 'Allow Camera and Microphone'
+            this.addPeerWithoutStreamActionInStore({
+              id: userId,
+              roomId: this.myConnection.roomId,
+              userName: userName,
+            });
+
             playSound_JoinMeeting();
             setTimeout(() => {
               console.log(
@@ -222,6 +270,12 @@ export default {
     },
     increment() {
       this.$store.dispatch('incrementAsync');
+    },
+    addPeerWithoutStreamActionInStore(userData) {
+      this.$store.dispatch('addPeerWithoutStreamAction', userData);
+    },
+    removePeerWithoutStreamActionInStore(userData) {
+      this.$store.dispatch('removePeerWithoutStreamAction', userData);
     },
     addConnectedItemToStore(userData) {
       this.$store.dispatch('addConnection', userData);
@@ -292,6 +346,15 @@ export default {
       let broadcastedMyStatusToThisUser = false;
 
       call.on('stream', (userVideoStream) => {
+        // let's keep track of connected users to help keep track of
+        // whether or not they received our stream.
+        // Sometimes there's too much of a delay when other user
+        // is dealing with the browser's 'Allow Camera and Microphone'
+        this.removePeerWithoutStreamActionInStore({
+          id: userId,
+          roomId: this.myConnection.roomId,
+        });
+
         // have the user's stream now, so can finally add user connection data to the store.
         userConnection.stream = userVideoStream;
 
