@@ -20,7 +20,9 @@ export default {
   },
   computed: {
     whoIsSharing() {
-      return `${this.connectedItem.userName} is sharing`;
+      return this.connectedItem.isMe
+        ? `I am sharing`
+        : `${this.connectedItem.userName} is sharing`;
     },
     heightWidthStyle() {
       return 'height:50%;width:50%;margin:0;padding:0;';
