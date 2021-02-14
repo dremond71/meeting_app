@@ -65,7 +65,6 @@ export default {
           gdmOptions
         );
         this.$store.dispatch('startSharing', captureStream);
-        console.log('');
       } catch (err) {
         console.error('Error: ' + err);
       }

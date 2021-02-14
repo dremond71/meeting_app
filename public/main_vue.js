@@ -1,6 +1,8 @@
 import App from './components/App.js';
 
 function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
+  console.log('\n\npropagateNewStreamToOthers(): start');
+
   if (peersListExcludingMe && peersListExcludingMe.length > 0) {
     console.log(`There are peers to contact : ${peersListExcludingMe.length}`);
 
@@ -8,6 +10,9 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
     const mediaStream = newStream;
 
     for (const aPeer of peersListExcludingMe) {
+      console.log(
+        `  adjusting stream for user: ${aPeer.userName} (${aPeer.id})`
+      );
       const sendersList = aPeer.call?.peerConnection?.getSenders();
       sendersList.map((sender) => {
         if (sender.track.kind == 'audio') {
@@ -23,6 +28,8 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
       });
     } //for
   } // there are peers
+
+  console.log('\n\npropagateNewStreamToOthers(): end\n\n');
 }
 
 function closeStream(someStream) {
@@ -49,6 +56,19 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    myCurrentStream: (state) => {
+      // find my connection info
+      const myInfo = state.connectedList.find((item) => {
+        return item.isMe === true;
+      });
+
+      let myStream = undefined;
+      if (myInfo) {
+        // sharing or not, my stream is always this
+        myStream = myInfo.stream;
+      }
+      return myStream;
+    },
     peersWithNoStream: (state) => {
       return state.peersWithoutStream;
     },

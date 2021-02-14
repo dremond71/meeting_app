@@ -94,8 +94,7 @@ export default {
         // TODO check if I need to send shareStream instead here.
         component_this.sendMyStreamToNewUserAndAcceptUserStream(
           value.id,
-          value.userName,
-          component_this.myConnection.stream
+          value.userName
         );
       }
     }
@@ -208,11 +207,7 @@ export default {
                 `app.js"socket.on:user-connected:event: Send my stream to user ${userId}, user name ${userName}`
               );
               // user joined
-              this.sendMyStreamToNewUserAndAcceptUserStream(
-                userId,
-                userName,
-                stream
-              );
+              this.sendMyStreamToNewUserAndAcceptUserStream(userId, userName);
             }, 2000);
           });
         });
@@ -323,12 +318,16 @@ export default {
         this.updateConnectedItemInStore(userConnection);
       }
     },
-    sendMyStreamToNewUserAndAcceptUserStream(userId, userName, stream) {
+    sendMyStreamToNewUserAndAcceptUserStream(userId, userName) {
       console.log(
         `sendMyStreamToNewUserAndAcceptUserStream ${userId}, ${userName}`
       );
+
+      // obtain my current stream (video/audio, or share stream)
+      const myCurrentStream = this.$store.getters.myCurrentStream;
+
       // sending my stream to a user through a call
-      const call = this.myPeer.call(userId, stream);
+      const call = this.myPeer.call(userId, myCurrentStream);
 
       // preparing most of user connection data here; but don't yet have stream
       const userConnection = {
