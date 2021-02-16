@@ -5,7 +5,7 @@ export default {
 <div class="w3-center" style="background-color:#f0f0f0;">
     <p class="w3-center">{{whoIsSharing}}</p>
        <video id="shared"></video>
-       <p>  </p>
+       <p style="height:100px;">  </p>
 </div>
 `,
   mounted() {
