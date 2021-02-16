@@ -8,6 +8,10 @@ Inspired by the YouTube tutorial [How To Create A Video Chat App With WebRTC](ht
 
 ## Setup
 
+## Install Peer JS Server
+
+Follow the instructions here: https://github.com/peers/peerjs-server#run-server .
+
 ### Create .env file
 
 In the root directory of the project, create a `.env` file.
