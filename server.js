@@ -87,28 +87,40 @@ io.on('connection', (socket) => {
     socket.to(roomId).broadcast.emit('user-unmuted-audio', userId);
   });
 
-  socket.on('send_chat_message', (roomId, userId, socketID, chatMessage) => {
-    console.log(
-      `server.js:socket.on:send_chat_message:event: room: ${roomId}, userid: ${userId}, socketID: ${socketID}, chatMessage: ${chatMessage}`
-    );
+  socket.on(
+    'send_chat_message',
+    (roomId, userId, userName, socketID, chatMessage) => {
+      console.log(
+        `server.js:socket.on:send_chat_message:event: room: ${roomId}, userid: ${userId}, userName: ${userName} socketID: ${socketID}, chatMessage: ${chatMessage}`
+      );
 
-    if (socketID === 'everyone') {
-      socket
-        .to(roomId)
-        .broadcast.emit('chat_message_everyone', userId, chatMessage);
-    } else {
-      
-      if (socketID) {
-        try {
-          io.to(socketID).emit('chat_message_specific', userId, chatMessage);
-        } catch (error) {
-          console.log(error);
-        }
+      if (socketID === 'everyone') {
+        socket
+          .to(roomId)
+          .broadcast.emit(
+            'chat_message_everyone',
+            userId,
+            userName,
+            chatMessage
+          );
       } else {
-        console.log('ERROR: socketID is null');
+        if (socketID) {
+          try {
+            io.to(socketID).emit(
+              'chat_message_specific',
+              userId,
+              userName,
+              chatMessage
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log('ERROR: socketID is null');
+        }
       }
     }
-  });
+  );
 
   socket.on('muted-video', (roomId, userId) => {
     console.log(

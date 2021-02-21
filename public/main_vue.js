@@ -48,6 +48,7 @@ const store = new Vuex.Store({
     product: `Meet-Free`,
     description: 'Free Video-conferencing App',
     peersWithoutStream: new Map(),
+    chatMessages: [],
     connectedList: [],
     infoBarMessage: '  ',
     sharingTemp: {
@@ -108,6 +109,9 @@ const store = new Vuex.Store({
       return state.connectedList.find((item) => {
         return item.isMe === true;
       });
+    },
+    allChatMessages: (state) => {
+      return state.chatMessages;
     },
   },
   mutations: {
@@ -288,6 +292,13 @@ const store = new Vuex.Store({
         socket.emit('stopping-share', myInfo.roomId, myInfo.id);
       }
     },
+
+    addChatMessage(state, data) {
+      console.log(
+        `adding chat message id: '${data.id}' from: '${data.from}' to: '${data.to}' to store`
+      );
+      state.chatMessages.push(data);
+    },
   },
 
   actions: {
@@ -323,6 +334,9 @@ const store = new Vuex.Store({
     },
     stopSharing(context) {
       context.commit('stopSharingSomething');
+    },
+    addTheChatMessage(context, data) {
+      context.commit('addChatMessage', data);
     },
   },
 });

@@ -157,16 +157,34 @@ export default {
       this.updateWhoIsSharingInStore({ id: userId, enabled: false });
     });
 
-    socket.on('chat_message_everyone', (userId, chatMessage) => {
+    socket.on('chat_message_everyone', (userId, userName, chatMessage) => {
       console.log(
-        `chat_message_everyone: userId '${userId}' sent public chat message '${chatMessage}'`
+        `chat_message_everyone: userId '${userId}' userName '${userName}' sent public chat message '${chatMessage}'`
       );
+
+      const chatMessageData = {
+        id: Date.now(),
+        from: userName,
+        to: 'Everyone',
+        message: chatMessage,
+      };
+
+      this.putChatMessageInStore(chatMessageData);
     });
 
-    socket.on('chat_message_specific', (userId, chatMessage) => {
+    socket.on('chat_message_specific', (userId, userName, chatMessage) => {
       console.log(
-        `chat_message_specific: userId '${userId}' sent private chat message '${chatMessage}'`
+        `chat_message_specific: userId '${userId}' userName: '${userName}' sent private chat message '${chatMessage}'`
       );
+
+      const chatMessageData = {
+        id: Date.now(),
+        from: userName,
+        to: 'Me',
+        message: chatMessage,
+      };
+
+      this.putChatMessageInStore(chatMessageData);
     });
 
     socket.on('my_socket_id', (roomId, userId, userName, socketID) => {
@@ -250,6 +268,10 @@ export default {
     },
   },
   methods: {
+    putChatMessageInStore(chatMessageData) {
+      this.$store.dispatch('addTheChatMessage', chatMessageData);
+    },
+
     broadcastMyStatusAttributes() {
       const myConnection = this.$store.getters.myConnectedItem;
 

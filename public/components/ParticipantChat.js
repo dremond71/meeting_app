@@ -6,6 +6,7 @@ export default {
     <h3>Chat</h3>
     <label for="receivedText" class="w3-margin-top"><b>Messages</b></label>
     <textarea id="receivedText" name="receivedText" rows="8" style="width:100%;resize:none;" class="w3-margin-bottom;" readonly>
+       {{ theChatMessages }}
     </textarea>
     <hr/>
     <label for="selectNames"><b>Send Message To:</b></label>
@@ -13,7 +14,6 @@ export default {
         <option  key="chat_placeholder" disabled value="">Select...</option> 
         <option v-for="item in chatItems"   v-bind:value="item.value" >{{item.text}}</option>     
     </select>
-    <span>Selected: {{ selected }}</span>
     <textarea id="sendText" name="sendText" v-model="messageToSend" rows="6"  class="w3-margin-top" style="width:100%;resize:none;">
     </textarea>
     <button class="w3-button w3-round-xxlarge w3-light-blue" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
@@ -51,12 +51,23 @@ export default {
         if (!foundSelected) {
           this.selected = '';
         }
-        
       }
       return listItems;
     },
     isDisabled() {
       return this.selected === '';
+    },
+    theChatMessages() {
+      let messages = '';
+
+      const chatMessages = this.$store.getters.allChatMessages;
+      for (let i = chatMessages.length - 1; i >= 0; i--) {
+        const cm = chatMessages[i];
+        const thisMessage = `\nFrom: ${cm.from}, To: ${cm.to}\n[\n${cm.message}\n]`;
+        messages += thisMessage;
+      }
+
+      return messages;
     },
   },
   methods: {
@@ -74,7 +85,7 @@ export default {
 
         if (myConnectedItem) {
           let sendToID = destinationId;
-
+          let userName = 'Everyone';
           if (sendToID !== 'everyone') {
             const destinationItem = this.$store.getters.getSpecificConnectedItem(
               destinationId
@@ -87,13 +98,24 @@ export default {
             } else {
               // use socket id instead of peer id.
               sendToID = destinationItem.socketID;
+              userName = destinationItem.userName;
             }
           }
+
+          // save my chat message going out
+          const myChatMessage = {
+            id: Date.now(),
+            from: 'Me',
+            to: userName,
+            message: chatMessage,
+          };
+          this.$store.dispatch('addTheChatMessage', myChatMessage);
 
           socket.emit(
             'send_chat_message',
             myConnectedItem.roomId,
             myConnectedItem.id,
+            myConnectedItem.userName,
             sendToID,
             chatMessage
           );
