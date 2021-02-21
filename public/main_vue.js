@@ -50,6 +50,7 @@ const store = new Vuex.Store({
     peersWithoutStream: new Map(),
     chatMessages: [],
     connectedList: [],
+    socketInfo: [],
     infoBarMessage: '  ',
     sharingTemp: {
       shareStream: undefined,
@@ -113,6 +114,14 @@ const store = new Vuex.Store({
     allChatMessages: (state) => {
       return state.chatMessages;
     },
+    getSocketDataById: (state) => {
+      // return a function so we can provide our own parameter
+      return function (id) {
+        return state.socketInfo.find((socketData) => {
+          return socketData.userId === id;
+        });
+      };
+    },
   },
   mutations: {
     addPeerWithoutStream(state, data) {
@@ -155,6 +164,17 @@ const store = new Vuex.Store({
       });
       if (existingConnection) {
         existingConnection.userName = data.userName;
+      } else {
+        console.log(`Could not find id ${data.id} in store`);
+      }
+    },
+    updateSocketId(state, data) {
+      // update socket id for a userId
+      const existingConnection = state.connectedList.find((item) => {
+        return item.id === data.id;
+      });
+      if (existingConnection) {
+        existingConnection.socketID = data.socketId;
       } else {
         console.log(`Could not find id ${data.id} in store`);
       }
@@ -299,6 +319,11 @@ const store = new Vuex.Store({
       );
       state.chatMessages.push(data);
     },
+
+    addSocketInfo(state, data) {
+      console.log(`adding socket info to store`);
+      state.socketInfo.push(data);
+    },
   },
 
   actions: {
@@ -316,6 +341,9 @@ const store = new Vuex.Store({
     },
     updateTheUserName(context, data) {
       context.commit('updateUserName', data);
+    },
+    updateTheSocketId(context, data) {
+      context.commit('updateSocketId', data);
     },
     updateAudioMuted(context, data) {
       context.commit('updateAudioEnabled', data);
@@ -337,6 +365,9 @@ const store = new Vuex.Store({
     },
     addTheChatMessage(context, data) {
       context.commit('addChatMessage', data);
+    },
+    addTheSocketInfo(context, data) {
+      context.commit('addSocketInfo', data);
     },
   },
 });

@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     );
     socket.join(roomId);
     // sends to all sockets
-    //io.sockets.emit('my_socket_id',roomId, userId, userName, socketID);
+    io.sockets.emit('some_socket_id', roomId, userId, userName, socketID);
     socket
       .to(roomId)
       .broadcast.emit('user-connected', userId, userName, socketID);
@@ -70,7 +70,15 @@ io.on('connection', (socket) => {
     console.log(
       `server.js:socket.on:broadcast-username:event: room: ${roomId}, userid: ${userId}, userName: ${userName}`
     );
+    console.log(`By the way, this socketID is ${socketID}`);
     socket.to(roomId).broadcast.emit('user-name', userId, userName);
+  });
+
+  socket.on('broadcast-socket-id', (roomId, userId, socketId) => {
+    console.log(
+      `server.js:socket.on:broadcast-socket-id:event: room: ${roomId}, userid: ${userId}, socketId: ${socketId}`
+    );
+    socket.to(roomId).broadcast.emit('socket-id', userId, socketId);
   });
 
   socket.on('muted-audio', (roomId, userId) => {
@@ -89,12 +97,12 @@ io.on('connection', (socket) => {
 
   socket.on(
     'send_chat_message',
-    (roomId, userId, userName, socketID, chatMessage) => {
+    (roomId, userId, userName, theSocketID, chatMessage) => {
       console.log(
-        `server.js:socket.on:send_chat_message:event: room: ${roomId}, userid: ${userId}, userName: ${userName} socketID: ${socketID}, chatMessage: ${chatMessage}`
+        `server.js:socket.on:send_chat_message:event: room: ${roomId}, userid: ${userId}, userName: ${userName} socketID: ${theSocketID}, chatMessage: ${chatMessage}`
       );
 
-      if (socketID === 'everyone') {
+      if (theSocketID === 'everyone') {
         socket
           .to(roomId)
           .broadcast.emit(
@@ -104,9 +112,9 @@ io.on('connection', (socket) => {
             chatMessage
           );
       } else {
-        if (socketID) {
+        if (theSocketID) {
           try {
-            io.to(socketID).emit(
+            io.to(theSocketID).emit(
               'chat_message_specific',
               userId,
               userName,
@@ -116,7 +124,7 @@ io.on('connection', (socket) => {
             console.log(error);
           }
         } else {
-          console.log('ERROR: socketID is null');
+          console.log('ERROR: theSocketID is null');
         }
       }
     }

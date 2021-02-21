@@ -127,6 +127,11 @@ export default {
       this.updateUserNameInStore({ id: userId, userName: userName });
     });
 
+    socket.on('socket-id', (userId, socketId) => {
+      console.log(`User ${userId} has socketId ${socketId}`);
+      this.updateSocketIdInStore({ id: userId, socketId: socketId });
+    });
+
     socket.on('user-muted-audio', (userId) => {
       console.log(`User ${userId} muted audio`);
       this.updateAudioMutedInStore({ id: userId, enabled: false });
@@ -187,10 +192,23 @@ export default {
       this.putChatMessageInStore(chatMessageData);
     });
 
-    socket.on('my_socket_id', (roomId, userId, userName, socketID) => {
+    /**
+     * Emitting this event from server.js was the only way
+     * I could figure out how to get MY socket id.
+     */
+    socket.on('some_socket_id', (roomId, userId, userName, socketID) => {
       console.log(
-        `my_socket_id: userId '${userId}', roomId: '${roomId}', userName: '${userName}', socketId: '${socketID}' `
+        `some_socket_id: userId '${userId}', roomId: '${roomId}', userName: '${userName}', socketId: '${socketID}' `
       );
+
+      const socketData = {
+        userId: userId,
+        roomId: roomId,
+        userName: userName,
+        socketID: socketID,
+      };
+
+      this.processSomeSocketData(socketData);
     });
 
     this.myPeer.on('open', (id) => {
@@ -212,6 +230,21 @@ export default {
           this.myConnection.isMe = true; // mutes my video; even though muted=true doesn't show in video HTML element ;)
           this.myConnection.audioEnabled = true;
           this.myConnection.videoEnabled = true;
+
+          // see if I can obtain my socket Id BEFORE
+          // adding my other connection data to the store.
+          const mySocketId = this.getMySocketId(id);
+          if (mySocketId) {
+            console.log(
+              `found my socket id before adding my connection to store`
+            );
+            this.myConnection.socketID = mySocketId;
+          } else {
+            console.log(
+              `did NOT find my socket id before adding my connection to store`
+            );
+          }
+
           this.addConnectedItemToStore(this.myConnection);
 
           this.myPeer.on('call', (call) => {
@@ -268,6 +301,19 @@ export default {
     },
   },
   methods: {
+    getMySocketId(userId) {
+      let socketId = undefined;
+      const socketData = this.$store.getters.getSocketDataById(userId);
+      if (socketData) {
+        socketId = socketData.socketID;
+      }
+
+      return socketId;
+    },
+    processSomeSocketData(socketData) {
+      this.$store.dispatch('addTheSocketInfo', socketData);
+    },
+
     putChatMessageInStore(chatMessageData) {
       this.$store.dispatch('addTheChatMessage', chatMessageData);
     },
@@ -311,6 +357,15 @@ export default {
           myConnection.userName
         );
       }
+
+      if (myConnection.socketID) {
+        socket.emit(
+          'broadcast-socket-id',
+          myConnection.roomId,
+          myConnection.id,
+          myConnection.socketID
+        );
+      }
     },
     increment() {
       this.$store.dispatch('incrementAsync');
@@ -329,6 +384,9 @@ export default {
     },
     updateUserNameInStore(data) {
       this.$store.dispatch('updateTheUserName', data);
+    },
+    updateSocketIdInStore(data) {
+      this.$store.dispatch('updateTheSocketId', data);
     },
     updateAudioMutedInStore(data) {
       this.$store.dispatch('updateAudioMuted', data);
