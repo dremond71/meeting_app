@@ -89,6 +89,15 @@ const store = new Vuex.Store({
       };
     },
 
+    getSpecificConnectedItem: function (state) {
+      // return a function so we can provide our own parameter
+      return function (id) {
+        return state.connectedList.find((connectedItem) => {
+          return connectedItem.id === id;
+        });
+      };
+    },
+
     somebodySharing: (state) => {
       return state.connectedList.find((connectedItem) => {
         return connectedItem.sharing === true;
@@ -108,6 +117,7 @@ const store = new Vuex.Store({
         id: data.id,
         roomId: data.roomId,
         userName: data.userName,
+        socketID: data.socketID,
       });
     },
     removePeerWithoutStream(state, data) {

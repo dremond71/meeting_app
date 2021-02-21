@@ -9,36 +9,98 @@ export default {
     </textarea>
     <hr/>
     <label for="selectNames"><b>Send Message To:</b></label>
-    <select name="selectNames" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width:100%">
-        <option v-for="item in connectedItems" v-bind:key="item.id"   v-bind:value="item.id" >{{item.value}}</option>     
+    <select v-model="selected" name="selectNames" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width:100%">
+        <option  key="chat_placeholder" disabled value="">Select...</option> 
+        <option v-for="item in chatItems"   v-bind:value="item.value" >{{item.text}}</option>     
     </select>
-    <textarea id="sendText" name="sendText" rows="6"  class="w3-margin-top" style="width:100%;resize:none;">
+    <span>Selected: {{ selected }}</span>
+    <textarea id="sendText" name="sendText" v-model="messageToSend" rows="6"  class="w3-margin-top" style="width:100%;resize:none;">
     </textarea>
-    <button class="w3-button w3-round-xxlarge w3-light-blue" style="width:100%;">Send</button>
+    <button class="w3-button w3-round-xxlarge w3-light-blue" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
   </div>`,
   data: function () {
     return {
       open: false,
+      selected: '',
+      messageToSend: '',
     };
   },
   computed: {
-    connectedItems() {
+    chatItems() {
       const listItems = [];
       const everyoneItem = {
-        id: 'everyone',
-        chatId: 'chat_everyone',
-        value: 'Everyone',
+        value: 'chat_everyone',
+        text: 'Everyone',
       };
       listItems.push(everyoneItem);
       let items = this.$store.getters.everyoneButMe;
       for (const item of items) {
         listItems.push({
-          id: item.id,
-          chatId: `chat_${item.id}`,
-          value: item.userName,
+          value: `chat_${item.id}`,
+          text: item.userName ? item.userName : item.id,
         });
       }
+
+      const currentlySelected = this.selected;
+      if (currentlySelected !== '') {
+        // a chat participant may have dropped out,
+        // so check if we need to reset selected value
+        const foundSelected = listItems.find((item) => {
+          return item.value === currentlySelected;
+        });
+        if (!foundSelected) {
+          this.selected = '';
+        }
+        
+      }
       return listItems;
+    },
+    isDisabled() {
+      return this.selected === '';
+    },
+  },
+  methods: {
+    sendTheChat() {
+      const chatMessage = this.messageToSend.trim();
+      if (this.selected !== '') {
+        // remove 'chat_' from selected value to
+        // obtain the destination id (everyone, or peer id)
+        const destinationId = this.selected.replace('chat_', '');
+        console.log(
+          `Send chat message '${chatMessage}' to destinationId '${destinationId}'`
+        );
+
+        const myConnectedItem = this.$store.getters.myConnectedItem;
+
+        if (myConnectedItem) {
+          let sendToID = destinationId;
+
+          if (sendToID !== 'everyone') {
+            const destinationItem = this.$store.getters.getSpecificConnectedItem(
+              destinationId
+            );
+            if (!destinationItem) {
+              console.log(
+                `ERROR: could not retrieve item with id ${destinationId}`
+              );
+              sendToID = 'everyone';
+            } else {
+              // use socket id instead of peer id.
+              sendToID = destinationItem.socketID;
+            }
+          }
+
+          socket.emit(
+            'send_chat_message',
+            myConnectedItem.roomId,
+            myConnectedItem.id,
+            sendToID,
+            chatMessage
+          );
+
+          this.messageToSend = '';
+        }
+      }
     },
   },
 };

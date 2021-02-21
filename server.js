@@ -46,12 +46,18 @@ app.get('/videochat', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  const socketID = socket.id;
+
   socket.on('join-room', (roomId, userId, userName) => {
     console.log(
-      `server.js:socket.on:join-room:event: room: ${roomId}, userid: ${userId}, userName:${userName}`
+      `server.js:socket.on:join-room:event: SOCKET_ID: ${socketID} room: ${roomId}, userid: ${userId}, userName:${userName}`
     );
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit('user-connected', userId, userName);
+    // sends to all sockets
+    //io.sockets.emit('my_socket_id',roomId, userId, userName, socketID);
+    socket
+      .to(roomId)
+      .broadcast.emit('user-connected', userId, userName, socketID);
     socket.on('disconnect', () => {
       console.log(
         `server.js:socket.on:disconnect:event: room: ${roomId}, userid: ${userId}, user name ${userName}`
@@ -79,6 +85,29 @@ io.on('connection', (socket) => {
       `server.js:socket.on:unmuted-audio:event: room: ${roomId}, userid: ${userId}`
     );
     socket.to(roomId).broadcast.emit('user-unmuted-audio', userId);
+  });
+
+  socket.on('send_chat_message', (roomId, userId, socketID, chatMessage) => {
+    console.log(
+      `server.js:socket.on:send_chat_message:event: room: ${roomId}, userid: ${userId}, socketID: ${socketID}, chatMessage: ${chatMessage}`
+    );
+
+    if (socketID === 'everyone') {
+      socket
+        .to(roomId)
+        .broadcast.emit('chat_message_everyone', userId, chatMessage);
+    } else {
+      
+      if (socketID) {
+        try {
+          io.to(socketID).emit('chat_message_specific', userId, chatMessage);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log('ERROR: socketID is null');
+      }
+    }
   });
 
   socket.on('muted-video', (roomId, userId) => {

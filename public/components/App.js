@@ -71,6 +71,7 @@ export default {
         videoEnabled: false,
         sharing: false,
         call: undefined,
+        socketID: undefined,
       },
     };
   },
@@ -94,7 +95,8 @@ export default {
         // TODO check if I need to send shareStream instead here.
         component_this.sendMyStreamToNewUserAndAcceptUserStream(
           value.id,
-          value.userName
+          value.userName,
+          value.socketID
         );
       }
     }
@@ -155,6 +157,24 @@ export default {
       this.updateWhoIsSharingInStore({ id: userId, enabled: false });
     });
 
+    socket.on('chat_message_everyone', (userId, chatMessage) => {
+      console.log(
+        `chat_message_everyone: userId '${userId}' sent public chat message '${chatMessage}'`
+      );
+    });
+
+    socket.on('chat_message_specific', (userId, chatMessage) => {
+      console.log(
+        `chat_message_specific: userId '${userId}' sent private chat message '${chatMessage}'`
+      );
+    });
+
+    socket.on('my_socket_id', (roomId, userId, userName, socketID) => {
+      console.log(
+        `my_socket_id: userId '${userId}', roomId: '${roomId}', userName: '${userName}', socketId: '${socketID}' `
+      );
+    });
+
     this.myPeer.on('open', (id) => {
       console.log(
         `myPeer.on: user ${id}, user name '${USER_NAME}' joining room ${ROOM_ID}`
@@ -162,6 +182,8 @@ export default {
       this.myConnection.id = id;
       this.myConnection.userName = USER_NAME;
       this.myConnection.roomId = ROOM_ID;
+      // not sure how to get my socket id....yet...
+      this.myConnection.socketID = undefined;
       socket.emit('join-room', ROOM_ID, id, USER_NAME);
 
       // START MEDIA
@@ -190,7 +212,7 @@ export default {
             });
           });
 
-          socket.on('user-connected', (userId, userName) => {
+          socket.on('user-connected', (userId, userName, socketID) => {
             // let's keep track of connected users to help keep track of
             // whether or not they received our stream.
             // Sometimes there's too much of a delay when other user
@@ -199,6 +221,7 @@ export default {
               id: userId,
               roomId: this.myConnection.roomId,
               userName: userName,
+              socketID: socketID,
             });
 
             playSound_JoinMeeting();
@@ -207,7 +230,11 @@ export default {
                 `app.js"socket.on:user-connected:event: Send my stream to user ${userId}, user name ${userName}`
               );
               // user joined
-              this.sendMyStreamToNewUserAndAcceptUserStream(userId, userName);
+              this.sendMyStreamToNewUserAndAcceptUserStream(
+                userId,
+                userName,
+                socketID
+              );
             }, 2000);
           });
         });
@@ -311,6 +338,7 @@ export default {
         videoEnabled: true,
         sharing: false,
         call: call,
+        socketID: undefined,
       };
       if (!this.$store.getters.connectedContainsId(userId)) {
         this.addConnectedItemToStore(userConnection);
@@ -318,9 +346,9 @@ export default {
         this.updateConnectedItemInStore(userConnection);
       }
     },
-    sendMyStreamToNewUserAndAcceptUserStream(userId, userName) {
+    sendMyStreamToNewUserAndAcceptUserStream(userId, userName, socketID) {
       console.log(
-        `sendMyStreamToNewUserAndAcceptUserStream ${userId}, ${userName}`
+        `sendMyStreamToNewUserAndAcceptUserStream ${userId}, ${userName}, ${socketID}`
       );
 
       // obtain my current stream (video/audio, or share stream)
@@ -340,6 +368,7 @@ export default {
         videoEnabled: true,
         sharing: false,
         call: call,
+        socketID: socketID,
       };
 
       let broadcastedMyStatusToThisUser = false;
