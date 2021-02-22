@@ -4,10 +4,11 @@ import BottomBar from './BottomBar.js';
 import ShareArea from './ShareArea.js';
 import SidePanel from './SidePanel.js';
 
-function playSound(url) {
+function playSound(url, volumeLevel) {
   try {
     const myAudioElement = new Audio(url);
     myAudioElement.addEventListener('canplaythrough', (event) => {
+      myAudioElement.volume = volumeLevel;
       myAudioElement.play();
     });
   } catch (err) {
@@ -17,12 +18,17 @@ function playSound(url) {
 
 function playSound_JoinMeeting() {
   const url = './components/sounds/join1.mp3';
-  playSound(url);
+  playSound(url, 1.0);
 }
 
 function playSound_LeaveMeeting() {
   const url = './components/sounds/leave1.mp3';
-  playSound(url);
+  playSound(url, 1.0);
+}
+
+function playSound_ChatReceived() {
+  const url = './components/sounds/chat_received.mp3';
+  playSound(url, 0.1);
 }
 
 export default {
@@ -175,6 +181,7 @@ export default {
       };
 
       this.putChatMessageInStore(chatMessageData);
+      playSound_ChatReceived();
     });
 
     socket.on('chat_message_specific', (userId, userName, chatMessage) => {
@@ -190,6 +197,7 @@ export default {
       };
 
       this.putChatMessageInStore(chatMessageData);
+      playSound_ChatReceived();
     });
 
     /**

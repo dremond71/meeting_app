@@ -63,7 +63,7 @@ export default {
       const chatMessages = this.$store.getters.allChatMessages;
       for (let i = chatMessages.length - 1; i >= 0; i--) {
         const cm = chatMessages[i];
-        const thisMessage = `\nFrom: ${cm.from}, To: ${cm.to}\n[\n${cm.message}\n]`;
+        const thisMessage = `\nFrom: ${cm.from}\nTo: ${cm.to}\n[\n${cm.message}\n]\n\n`;
         messages += thisMessage;
       }
 
@@ -121,6 +121,7 @@ export default {
           );
 
           this.messageToSend = '';
+          playSound_ChatReceived();
         }
       }
     },
