@@ -7,7 +7,7 @@ export default {
   },
   template: `
 <div>
-  <div v-if="show" id="video-grid" style="height:100vh;background-color:#f0f0f0;">
+  <div v-if="show" id="video-grid" style="height:100vh;" class="w3-light-blue">
    <GridRow v-for="rowData in rowDataList"  v-bind:key="rowData.id"  v-bind:rowData="rowData"/>
   </div>
 </div>`,

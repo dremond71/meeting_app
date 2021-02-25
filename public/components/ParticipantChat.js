@@ -1,22 +1,40 @@
+function playSound(url, volumeLevel) {
+  try {
+    const myAudioElement = new Audio(url);
+    myAudioElement.addEventListener('canplaythrough', (event) => {
+      myAudioElement.volume = volumeLevel;
+      myAudioElement.play();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function playSound_ChatReceived() {
+  const url = './components/sounds/chat_received.mp3';
+  playSound(url, 0.1);
+}
+
 export default {
   name: 'ParticipantChat',
   components: {},
   template: `
-  <div class="w3-container w3-margin-top" style="width:100%">
-    <h3>Chat</h3>
-    <label for="receivedText" class="w3-margin-top"><b>Messages</b></label>
-    <textarea id="receivedText" name="receivedText" rows="8" style="width:100%;resize:none;" class="w3-margin-bottom;" readonly>
-       {{ theChatMessages }}
-    </textarea>
-    <hr/>
+  <div   class="w3-container w3-blue w3-center" style="width:100%;">
+    <h2>Chat</h2>
     <label for="selectNames"><b>Send Message To:</b></label>
-    <select v-model="selected" name="selectNames" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width:100%">
+    <select v-model="selected" name="selectNames" class="form-select form-select-lg mb-3 w3-light-blue w3-border-white" aria-label=".form-select-lg example" style="width:100%">
         <option  key="chat_placeholder" disabled value="">Select...</option> 
         <option v-for="item in chatItems"   v-bind:value="item.value" >{{item.text}}</option>     
     </select>
-    <textarea id="sendText" name="sendText" v-model="messageToSend" rows="6"  class="w3-margin-top" style="width:100%;resize:none;">
+    <textarea id="sendText" name="sendText" v-model="messageToSend" rows="6"  class="w3-margin-top w3-light-blue w3-border-white" style="width:100%;resize:none;">
     </textarea>
-    <button class="w3-button w3-round-xxlarge w3-light-blue" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
+    <button class="w3-button w3-round-xxlarge w3-light-blue w3-border-white" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
+    <hr/>
+    <label for="receivedText" class="w3-margin-top"><b>{{messagesTitle}}</b></label>
+    <textarea id="receivedText" name="receivedText" rows="16" style="width:100%;resize:none;" class="w3-margin-bottom w3-light-blue w3-border-white" readonly>
+       {{ theChatMessages }}
+    </textarea>
+    <div class="w3-blue" style="height:80px;margin-bottom:10px;"></div>
   </div>`,
   data: function () {
     return {
@@ -26,6 +44,12 @@ export default {
     };
   },
   computed: {
+    messagesTitle() {
+      const chatMessages = this.$store.getters.allChatMessages;
+      return chatMessages.length > 0
+        ? `Messages (${chatMessages.length})`
+        : 'Messages';
+    },
     chatItems() {
       const listItems = [];
       const everyoneItem = {
@@ -63,7 +87,8 @@ export default {
       const chatMessages = this.$store.getters.allChatMessages;
       for (let i = chatMessages.length - 1; i >= 0; i--) {
         const cm = chatMessages[i];
-        const thisMessage = `\nFrom: ${cm.from}\nTo: ${cm.to}\n[\n${cm.message}\n]\n\n`;
+
+        const thisMessage = `\nFrom: ${cm.from}\nTo  : ${cm.to}\n\n${cm.message}\n\n`;
         messages += thisMessage;
       }
 

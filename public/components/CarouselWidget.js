@@ -3,7 +3,7 @@ export default {
   components: {},
   template: `
 
-<div class=" w3-container" style="align-content: center;margin-top:10px;">
+<div class=" w3-container w3-blue" style="align-content:center;margin-top:10px;">
   <div>
       <img src="./components/icons/screenShareIcon.png" v-if="isSharingScreen" v-bind:inCarouselMode="carouselMode"></src>
       <video v-if="isNotSharingScreen" v-bind:id="videoId" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode"></video>

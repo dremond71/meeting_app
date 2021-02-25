@@ -2,7 +2,7 @@ export default {
   name: 'ShareScreen',
   components: {},
   template: `
-<div class="w3-center" style="background-color:#f0f0f0;">
+<div class="w3-center w3-light-blue">
     <p class="w3-center">{{whoIsSharing}}</p>
        <video id="shared"></video>
        <p style="height:100px;">  </p>

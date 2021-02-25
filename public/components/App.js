@@ -41,7 +41,7 @@ export default {
     SidePanel,
   },
   template: `
-<div style="background-color:#f0f0f0;">
+<div class="w3-light-blue">
 
     <div class="w3-container w3-blue">
       <h1 align="center"><b>{{ product }}</b></h1>
