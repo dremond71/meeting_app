@@ -1,19 +1,4 @@
-function playSound(url, volumeLevel) {
-  try {
-    const myAudioElement = new Audio(url);
-    myAudioElement.addEventListener('canplaythrough', (event) => {
-      myAudioElement.volume = volumeLevel;
-      myAudioElement.play();
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function playSound_ChatReceived() {
-  const url = './components/sounds/chat_received.mp3';
-  playSound(url, 0.1);
-}
+import { playSound_ChatReceived } from './sounds.js';
 
 export default {
   name: 'ParticipantChat',

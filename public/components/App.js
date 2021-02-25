@@ -4,32 +4,11 @@ import BottomBar from './BottomBar.js';
 import ShareArea from './ShareArea.js';
 import SidePanel from './SidePanel.js';
 
-function playSound(url, volumeLevel) {
-  try {
-    const myAudioElement = new Audio(url);
-    myAudioElement.addEventListener('canplaythrough', (event) => {
-      myAudioElement.volume = volumeLevel;
-      myAudioElement.play();
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function playSound_JoinMeeting() {
-  const url = './components/sounds/join1.mp3';
-  playSound(url, 1.0);
-}
-
-function playSound_LeaveMeeting() {
-  const url = './components/sounds/leave1.mp3';
-  playSound(url, 1.0);
-}
-
-function playSound_ChatReceived() {
-  const url = './components/sounds/chat_received.mp3';
-  playSound(url, 0.1);
-}
+import {
+  playSound_JoinMeeting,
+  playSound_LeaveMeeting,
+  playSound_ChatReceived,
+} from './sounds.js';
 
 export default {
   name: 'App',

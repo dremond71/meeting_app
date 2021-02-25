@@ -4,7 +4,9 @@ A simple video conferencing app using [node.js](https://nodejs.org/en/), [expres
 
 Inspired by the YouTube tutorial [How To Create A Video Chat App With WebRTC](https://www.youtube.com/watch?v=DvlyzDZDEq4&t=1466s) by [Web Dev Simplified](https://www.youtube.com/channel/UCFbNIlppjAuEX4znoulh0Cw).
 
+![](pic3.png)
 ![](pic1.png)
+![](pic2.png)
 
 ## Setup
 
