@@ -18,8 +18,8 @@
     <script src="/socket.io/socket.io.js" defer></script>
     <script>
         const ROOM_ID = `<%= roomId  %>`;
-        const SSL_KEY = `<%= sslKey  %>`;
-        const SSL_CERT = `<%= sslCert  %>`;
+        const PEERJS_SSL_KEY = `<%= sslKey  %>`;
+        const PEERJS_SSL_CERT = `<%= sslCert  %>`;
         const PEERJS_HOST = `<%= peerjsHost  %>`;
         const PEERJS_PORT = `<%= peerjsPort  %>`;
         const USER_NAME = `<%= userName  %>`;
@@ -29,8 +29,8 @@
         const peerConfig = {
             host: PEERJS_HOST,
             ssl: {
-                key: SSL_KEY,
-                cert: SSL_CERT
+                key: PEERJS_SSL_KEY,
+                cert: PEERJS_SSL_CERT
             }
         };
 

@@ -5,6 +5,9 @@ const fs = require('fs');
 const key = fs.readFileSync('./certs/key.pem');
 const cert = fs.readFileSync('./certs/cert.pem');
 
+const peerjsKey = fs.readFileSync('./certs/peerjs/key.pem');
+const peerjsCert = fs.readFileSync('./certs/peerjs/cert.pem');
+
 const peerjsHost = process.env.PEERJS_HOST || '/';
 const peerjsPort = process.env.PEERJS_PORT || '';
 
@@ -15,6 +18,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+// use the cert and key for server.js
 const server = https.createServer({ key: key, cert: cert }, app);
 
 const io = require('socket.io')(server);
@@ -35,10 +39,11 @@ app.get('/videochat', (req, res) => {
   const userName = req.query.username;
   console.log(`/room and userName is ${userName}`);
 
+  // pass in the peerjs cert and key
   res.render('room', {
     roomId: 'videochat',
-    sslKey: key,
-    sslCert: cert,
+    sslKey: peerjsKey,
+    sslCert: peerjsCert,
     peerjsHost: peerjsHost,
     peerjsPort: peerjsPort,
     userName: userName,
