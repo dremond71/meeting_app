@@ -1,26 +1,50 @@
 require('dotenv').config();
-
 const fs = require('fs');
+const https = require('https');
+const express = require('express');
+const http = require('http');
 
-const key = fs.readFileSync('./certs/key.pem');
-const cert = fs.readFileSync('./certs/cert.pem');
+const httpsMode = process.env.HTTPS_MODE === 'true';
 
-const peerjsKey = fs.readFileSync('./certs/peerjs/key.pem');
-const peerjsCert = fs.readFileSync('./certs/peerjs/cert.pem');
+let key = undefined;
+let cert = undefined;
+let peerjsKey = undefined;
+let peerjsCert = undefined;
 
 const peerjsHost = process.env.PEERJS_HOST || '/';
 const peerjsPort = process.env.PEERJS_PORT || '';
+const serverPort = process.env.SERVER_PORT || 3001;
 
-const express = require('express');
-const https = require('https');
+function createServer(theExpressApp, useHttps) {
+  let server = undefined;
+
+  if (useHttps) {
+    // use the cert and key for server.js
+
+    // read in the cert and key for server.js
+    key = fs.readFileSync('./certs/key.pem');
+    cert = fs.readFileSync('./certs/cert.pem');
+
+    // read in the cert and key for peerjs server
+    // used later when rendering room.ejs
+    peerjsKey = fs.readFileSync('./certs/peerjs/key.pem');
+    peerjsCert = fs.readFileSync('./certs/peerjs/cert.pem');
+
+    server = https.createServer({ key: key, cert: cert }, theExpressApp);
+  } else {
+    server = http.createServer(theExpressApp);
+  }
+
+  return server;
+}
+
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-// use the cert and key for server.js
-const server = https.createServer({ key: key, cert: cert }, app);
-
+// creates either an http or https server
+const server = createServer(app, httpsMode);
 const io = require('socket.io')(server);
 
 app.set('view engine', 'ejs');
@@ -39,15 +63,25 @@ app.get('/videochat', (req, res) => {
   const userName = req.query.username;
   console.log(`/room and userName is ${userName}`);
 
-  // pass in the peerjs cert and key
-  res.render('room', {
+  const renderData = {
     roomId: 'videochat',
-    sslKey: peerjsKey,
-    sslCert: peerjsCert,
     peerjsHost: peerjsHost,
     peerjsPort: peerjsPort,
     userName: userName,
-  });
+    useHttps: `${httpsMode}`,
+  };
+
+  if (httpsMode) {
+    renderData.sslKey = peerjsKey;
+    renderData.sslCert = peerjsCert;
+  } else {
+    // room.ejs will fail to load
+    // when these fields are missing
+    renderData.sslKey = '';
+    renderData.sslCert = '';
+  }
+
+  res.render('room', renderData);
 });
 
 io.on('connection', (socket) => {
@@ -163,4 +197,4 @@ io.on('connection', (socket) => {
     socket.to(roomId).broadcast.emit('user-stopping-share', userId);
   });
 });
-server.listen(443);
+server.listen(serverPort);

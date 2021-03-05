@@ -17,26 +17,37 @@
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js" defer></script>
     <script src="/socket.io/socket.io.js" defer></script>
     <script>
+
         const ROOM_ID = `<%= roomId  %>`;
-        const PEERJS_SSL_KEY = `<%= sslKey  %>`;
-        const PEERJS_SSL_CERT = `<%= sslCert  %>`;
         const PEERJS_HOST = `<%= peerjsHost  %>`;
         const PEERJS_PORT = `<%= peerjsPort  %>`;
         const USER_NAME = `<%= userName  %>`;
+        const useHTTPs = `<%= useHttps  %>`;
 
-        console.log(`In room.ejs => USER_NAME=${USER_NAME}`);
+        // will be blank useHttps is false
+        const PEERJS_SSL_KEY = `<%= sslKey  %>`;
+        const PEERJS_SSL_CERT = `<%= sslCert  %>`;
 
+        //
+        // set up the config for peerjs connection
+        // used in App.js
+        //
         const peerConfig = {
-            host: PEERJS_HOST,
-            ssl: {
-                key: PEERJS_SSL_KEY,
-                cert: PEERJS_SSL_CERT
-            }
+            host: PEERJS_HOST
         };
 
         // ngrok config won't work if port is specified for some reason
         if (PEERJS_PORT.trim() !== '') {
             peerConfig.port = PEERJS_PORT;
+        }
+
+        // figure out if we need to use
+        // certificates for peerjs
+        if (useHTTPs === 'true') {
+            peerConfig.ssl = {
+                key: PEERJS_SSL_KEY,
+                cert: PEERJS_SSL_CERT
+            };
         }
 
     </script>

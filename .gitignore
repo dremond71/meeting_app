@@ -1,6 +1,5 @@
 backup/
 certs/*.pem
 certs/peerjs/*.pem
-env_files/
 .env
 node_modules/
