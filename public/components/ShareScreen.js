@@ -1,10 +1,12 @@
+import { isIOSDevice } from './ios_helper.js';
+
 export default {
   name: 'ShareScreen',
   components: {},
   template: `
 <div class="w3-center w3-light-blue">
     <p class="w3-center">{{whoIsSharing}}</p>
-       <video id="shared"></video>
+       <video id="shared" v-bind:playsinline="isAnIOSDevice"></video>
        <p style="height:100px;">  </p>
 </div>
 `,
@@ -19,6 +21,9 @@ export default {
     };
   },
   computed: {
+    isAnIOSDevice() {
+      return isIOSDevice();
+    },
     whoIsSharing() {
       return this.connectedItem.isMe
         ? `I am sharing`

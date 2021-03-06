@@ -1,3 +1,5 @@
+import { isIOSDevice } from './ios_helper.js';
+
 export default {
   name: 'CarouselWidget',
   components: {},
@@ -6,7 +8,7 @@ export default {
 <div class=" w3-container w3-blue" style="align-content:center;margin-top:10px;">
   <div>
       <img src="./components/icons/screenShareIcon.png" v-if="isSharingScreen" v-bind:inCarouselMode="carouselMode"></src>
-      <video v-if="isNotSharingScreen" v-bind:id="videoId" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode"></video>
+      <video v-if="isNotSharingScreen" v-bind:id="videoId" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode" v-bind:playsinline="isAnIOSDevice"></video>
       
         <div>
           <i v-bind:class="audioIconClass" ></i>
@@ -30,6 +32,9 @@ export default {
     };
   },
   computed: {
+    isAnIOSDevice() {
+      return isIOSDevice();
+    },
     videoId() {
       return `carousel_item_${this.connectedItem.id}`;
     },
