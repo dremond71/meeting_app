@@ -37,7 +37,7 @@ Both the peerjs server and server.js will be running in https mode and will requ
 
 Put a cert.pem and key.pem in the `certs\peerjs` directory for the peerjs server.
 
-Put a cert.pem and key.pem in the `certs`        directory for the server.js server.
+Put a cert.pem and key.pem in the `certs` directory for the server.js server.
 
 Follow the instructions in [Creating SSL Certificate and Key](./certs/readme.md) to create these files.
 
@@ -75,9 +75,11 @@ the `.env` in the main directory, and copies `env_files/local/.env` into the mai
 ### Open the web app in the browser
 
 In your browser, navigate to `https://localhost:3002` .
+
 - You will need to accept the certificate warning. On Chrome, there should be an Advanced twistie that you can open and then select `Proceed`.
 
 In your browser, navigate to `https://localhost:3001` .
+
 - You will need to accept the certificate warning. On Chrome, there should be an Advanced twistie that you can open and then select `Proceed`.
 - You will end up in the Lobby. Type a user name for yourself and press the [Join Meeting] button
 - You will need to click on the Allow button so that browser can use the webcam and microphone.
@@ -101,7 +103,6 @@ I bought an ngrok account where I could have 2 processes, and they provided TLS 
 When the TLS certificates are set up for the ngrok domains, there is no need to
 use https mode nor (cert.pem, key.pem) on the two local processes running on your laptop.
 
-
 ### Create a new .env file
 
 In `env_files\public` create a new `.env` file.
@@ -118,7 +119,6 @@ where subdomain2 is the CNAME you defined in the DNS section of your website dom
 
 There is no need to specify PEERJS_PORT; otherwise the front end, defined in room.ejs, will not be able to connect to peerjs. Not sure why.
 
-
 ### Start Peerjs server (without https)
 
 ```sh
@@ -131,7 +131,6 @@ Modify `start_ngrok_tunnel_peerjs_server.bat` to contain your
 subdomain2.yourhost.com.
 
 (Where subdomain2 is defined in your ngrok account and has a TLS certificate provided by ngrok.)
-
 
 ### Start the ngrok tunnel for Peerjs server
 
@@ -150,13 +149,12 @@ npm run start-public
 (`setenv_public.bat` is called before starting the server. This bat file deletes
 the `.env` in the main directory, and copies `env_files/public/.env` into the main directory.)
 
-
 ### Edit start_ngrok_tunnel_server.bat
 
 Modify `start_ngrok_tunnel_server.bat` to contain your
 subdomain1.yourhost.com.
 
-(Where subdomain2 is defined in your ngrok account and has a TLS certificate provided by ngrok.)
+(Where subdomain1 is defined in your ngrok account and has a TLS certificate provided by ngrok.)
 
 ### Start the ngrok tunnel for server.js
 

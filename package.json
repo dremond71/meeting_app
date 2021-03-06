@@ -19,8 +19,9 @@
     "debug-local": "node --inspect-brk=9229 server.js",
     "predebug-public": "setenv_public.bat",
     "debug-public": "node --inspect-brk=9229 server.js",
-    "start-ngrok-tunnel-peerjs":"start_ngrok_tunnel_peerjs_server.bat",
-    "start-ngrok-tunnel-server":"start_ngrok_tunnel_server.bat"
+    "start-ngrok-tunnel-peerjs": "start_ngrok_tunnel_peerjs_server.bat",
+    "start-ngrok-tunnel-server": "start_ngrok_tunnel_server.bat",
+    "start-everything": "start_everything.bat"
   },
   "keywords": [],
   "author": "",
