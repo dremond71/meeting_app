@@ -3,6 +3,8 @@ import VideoGrid from './VideoGrid.js';
 import BottomBar from './BottomBar.js';
 import ShareArea from './ShareArea.js';
 import SidePanel from './SidePanel.js';
+import { putAudioElementsInWindowObject } from './sounds.js';
+import { isIOSDevice } from './ios_helper.js';
 
 import {
   playSound_JoinMeeting,
@@ -25,6 +27,7 @@ export default {
     <div class="w3-container w3-blue">
       <h1 align="center"><b>{{ product }}</b></h1>
       <p align="center"><b>{{ description }}</b></p>
+      <div align="center"><button v-if="showLoadSoundsButton" class="w3-button w3-round-xxlarge w3-light-green" v-on:click="handleIOSDevicesLoadingOfSounds">{{loadSoundsButtonText}}</button></div>
     </div>
     <NavBar></NavBar>
 
@@ -58,9 +61,18 @@ export default {
         call: undefined,
         socketID: undefined,
       },
+      soundsLoaded: false,
     };
   },
   mounted() {
+    //
+    // load all sound files;if not iOS device
+    // iOS devices must press a button to
+    // load all sounds (iOS defect...I mean...'feature')
+    if (!isIOSDevice()) {
+      putAudioElementsInWindowObject();
+    }
+
     // needed for function below
     const component_this = this;
 
@@ -280,6 +292,12 @@ export default {
     });
   },
   computed: {
+    loadSoundsButtonText() {
+      return 'Enable Sound Effects';
+    },
+    showLoadSoundsButton() {
+      return !this.soundsLoaded && isIOSDevice();
+    },
     product() {
       return this.$store.state.product;
     },
@@ -288,6 +306,15 @@ export default {
     },
   },
   methods: {
+    handleIOSDevicesLoadingOfSounds() {
+      // there is a defect...I mean...feature in iOS devices
+      // where a sound is only loaded if a user has
+      // touched a button; there is no autoload.
+      // so we present a button to iOS users.
+      // when they touch it, we load all sounds.
+      putAudioElementsInWindowObject();
+      this.soundsLoaded = true;
+    },
     getMySocketId(userId) {
       let socketId = undefined;
       const socketData = this.$store.getters.getSocketDataById(userId);
