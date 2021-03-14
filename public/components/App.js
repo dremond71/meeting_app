@@ -244,13 +244,18 @@ export default {
             );
           }
 
+          // this is fine since my initial stream from camera is fine.
+          // but, later in this code, get my stream from store getters.
           this.addConnectedItemToStore(this.myConnection);
 
           this.myPeer.on('call', (call) => {
             // IF THIS FUNCTION IS NOT HERE, THE CODE IN sendMyStreamToNewUserAndAcceptUserStream NEVER GETS A STREAM.
             // ALSO THESE console.log() LINES NEVER PRINT OUT, AND DO NOT TRIGGER BREAKPOINTS
             console.log(`${call.peer} calling me. Answering call`);
-            call.answer(stream);
+
+            // obtain my current stream (video/audio, or share stream)
+            const myCurrentStream = this.$store.getters.myCurrentStream;
+            call.answer(myCurrentStream);
 
             call.on('stream', (userVideoStream) => {
               setTimeout(() => {
@@ -421,7 +426,7 @@ export default {
       // webcam/microphone stream with sharing stream to all connected users.
       const userId = call.peer;
       console.log(`acceptNewUserStream ${userId}, userName=...`);
-      // until user broadcast the user name, we will give it empty string.
+      // until user broadcasts the user name, we will give it temporary label.
       const userConnection = {
         id: userId,
         userName: '...',

@@ -14,18 +14,26 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
         `  adjusting stream for user: ${aPeer.userName} (${aPeer.id})`
       );
       const sendersList = aPeer.call?.peerConnection?.getSenders();
-      sendersList.map((sender) => {
-        if (sender.track.kind == 'audio') {
-          if (mediaStream.getAudioTracks().length > 0) {
-            sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+      if (sendersList) {
+        sendersList.map((sender) => {
+          if (sender.track.kind == 'audio') {
+            if (
+              mediaStream.getAudioTracks() &&
+              mediaStream.getAudioTracks().length > 0
+            ) {
+              sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+            }
           }
-        }
-        if (sender.track.kind == 'video') {
-          if (mediaStream.getVideoTracks().length > 0) {
-            sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+          if (sender.track.kind == 'video') {
+            if (
+              mediaStream.getVideoTracks() &&
+              mediaStream.getVideoTracks().length > 0
+            ) {
+              sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+            }
           }
-        }
-      });
+        });
+      }
     } //for
   } // there are peers
 
@@ -151,7 +159,14 @@ const store = new Vuex.Store({
         return item.id === connectedItem.id;
       });
       if (existingConnection) {
-        //console.log(`updating id ${connectedItem.id} to store`);
+        console.log(
+          `updating id ${connectedItem.id}'s call and stream in store`
+        );
+        // not sure when call and stream is passed into
+        // acceptNewUserStream and called twice for same user
+        // if the call and stream are different, so just
+        // update them in case.
+        existingConnection.call = connectedItem.call;
         existingConnection.stream = connectedItem.stream;
       } else {
         console.log(`Could not find id ${connectedItem.id} in store`);
