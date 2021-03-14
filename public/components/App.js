@@ -32,12 +32,12 @@ export default {
     <NavBar></NavBar>
 
     <div class="w3-row">
-      <div class="w3-col m10">
+      <div class="w3-col m9">
          <ShareArea></ShareArea>
          <VideoGrid></VideoGrid>
       </div>
 
-      <div class="w3-col m2">
+      <div class="w3-col m3">
         <SidePanel></SidePanel>
       </div>
      </div>
