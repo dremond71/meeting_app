@@ -149,7 +149,11 @@ const store = new Vuex.Store({
     },
     addConnected(state, connectedItem) {
       console.log(`adding id ${connectedItem.id} to store`);
-      state.connectedList.push(connectedItem);
+      // add new items to the beginning of the array
+      // this is to keep my stream at the bottom
+      // and other participants appear at the top
+      // of the array.
+      state.connectedList.unshift(connectedItem);
       state.infoBarMessage = `User ${connectedItem.id} has joined`;
     },
     updateConnected(state, connectedItem) {
