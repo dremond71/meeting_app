@@ -11,6 +11,7 @@ export default {
       <video v-if="isNotSharingScreen" v-bind:id="videoId" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode" v-bind:playsinline="isAnIOSDevice"></video>
       
         <div>
+          <div> {{ userName }} </div>
           <i v-bind:class="audioIconClass" ></i>
           <i v-bind:class="videoIconClass" ></i>
           <i>{{ sharingText}}</i>
@@ -45,7 +46,9 @@ export default {
       // trigger a change to the video element
       return this.connectedItem.sharing ? '' : '';
     },
-
+    userName() {
+      return this.connectedItem.userName;
+    },
     audioIconClass() {
       return this.connectedItem.audioEnabled
         ? 'bi bi-mic-fill'

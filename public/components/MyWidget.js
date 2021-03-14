@@ -8,14 +8,13 @@ export default {
   <div>
       <img src="./components/icons/screenShareIcon.png" v-if="isSharingScreen"></src>
       <video v-if="isNotSharingScreen" v-bind:id="connectedItem.id" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode" v-bind:playsinline="isAnIOSDevice"></video>
+      <div class="w3-center"> {{ userName }} </div>
       <div class="w3-bar w3-center">
-        <div>
+        <div>       
           <i v-bind:class="audioIconClass" ></i>
           <i v-bind:class="videoIconClass" ></i>
           <i>{{ sharingText}}</i>
-        </div>
-       
-        
+        </div>   
       </div>
   </div>   
 </div>`,
@@ -41,7 +40,9 @@ export default {
       // trigger a change to the video element
       return this.connectedItem.sharing ? '' : '';
     },
-
+    userName() {
+      return this.connectedItem.userName;
+    },
     audioIconClass() {
       return this.connectedItem.audioEnabled
         ? 'bi bi-mic-fill'
