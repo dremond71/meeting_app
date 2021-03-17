@@ -17,8 +17,17 @@ export default {
       return this.$store.getters.somebodySharing ? false : true;
     },
     rowDataList() {
-      // array in store
-      const originalArray = this.$store.getters.connected;
+      let originalArray;
+
+      if (this.$store.getters.connected.length > 1) {
+        // don't put myself in video grid
+        // I will appear in carousel
+        originalArray = this.$store.getters.everyoneButMe;
+      } else {
+        // all by myself. there is no carousel
+        // put me in the video grid.
+        originalArray = [this.$store.getters.myConnectedItem];
+      }
 
       // need to break a long array into separate arrays of max length of 3.
       const rowDataArray = [];

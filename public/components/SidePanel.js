@@ -8,11 +8,17 @@ export default {
   },
   template: `
     <div>
-      <Carousel v-if="someoneSharing"></Carousel>
+      <Carousel v-if="showCarousel"></Carousel>
       <ParticipantChat v-if="someoneToChatWith"></ParticipantChat>
     </div>
 `,
   computed: {
+    showCarousel() {
+      return this.atLeastTwoPeople || this.someoneSharing;
+    },
+    atLeastTwoPeople() {
+      return this.someoneToChatWith;
+    },
     someoneSharing() {
       return this.sharedItem ? true : false;
     },

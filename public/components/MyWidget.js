@@ -4,7 +4,7 @@ export default {
   name: 'MyWidget',
   components: {},
   template: `
-<div class="w3-col m3 w3-margin" >
+<div v-bind:class="theClassValues" align="center" >
   <div>
       <img src="./components/icons/screenShareIcon.png" v-if="isSharingScreen"></src>
       <video v-if="isNotSharingScreen" v-bind:id="connectedItem.id" v-bind:muted="connectedItem.isMe" v-bind:inCarouselMode="carouselMode" v-bind:playsinline="isAnIOSDevice"></video>
@@ -30,6 +30,19 @@ export default {
     };
   },
   computed: {
+    theClassValues() {
+      if (this.$store.getters.connected.length <= 2) {
+        // there is 1 person (me) OR
+        // there are 2 people: me and another person.
+        // if only me, my widget in video grid should take up entire screen.
+        // if me and 1 other person, I will be in carousel, and the only other
+        // person gets full screen
+        return 'w3-col m6 w3-margin';
+      } else {
+        return 'w3-col m3 w3-margin';
+      }
+    },
+
     isAnIOSDevice() {
       return isIOSDevice();
     },

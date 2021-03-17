@@ -36,8 +36,20 @@ export default {
     },
     carouselContent() {
       console.log(`In carouselContent`);
-      // array in store
-      const originalArray = this.$store.getters.connected;
+
+      let originalArray;
+
+      // when someone is sharing, everyone shows up
+      // in the carousel
+      if (this.$store.getters.somebodySharing) {
+        originalArray = this.$store.getters.connected;
+      } else {
+        // when noone is sharing, only I get put
+        // into the carousel.
+        // all other participants show up in
+        // main area (video grid)
+        originalArray = [this.$store.getters.myConnectedItem];
+      }
 
       // need to break a long array into separate arrays of max length of maxContentLimit.
       const rowDataArray = [];
