@@ -163,14 +163,7 @@ const store = new Vuex.Store({
         return item.id === connectedItem.id;
       });
       if (existingConnection) {
-        console.log(
-          `updating id ${connectedItem.id}'s call and stream in store`
-        );
-        // not sure when call and stream is passed into
-        // acceptNewUserStream and called twice for same user
-        // if the call and stream are different, so just
-        // update them in case.
-        existingConnection.call = connectedItem.call;
+        //console.log(`updating id ${connectedItem.id} to store`);
         existingConnection.stream = connectedItem.stream;
       } else {
         console.log(`Could not find id ${connectedItem.id} in store`);
