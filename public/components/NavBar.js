@@ -11,9 +11,4 @@ export default {
       <Clock></Clock>
       <ConnectedBadge></ConnectedBadge>
     </div>`,
-  computed: {
-    message() {
-      return this.$store.state.infoBarMessage;
-    },
-  },
 };

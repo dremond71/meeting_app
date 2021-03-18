@@ -23,8 +23,7 @@ export default {
 <div class="w3-light-blue">
 
     <div class="w3-container w3-blue">
-      <h1 align="center"><b>{{ product }}</b></h1>
-      <p align="center"><b>{{ description }}</b></p>
+      <p align="center"><b>{{ product }}</b></p>
     </div>
     <NavBar></NavBar>
 
@@ -287,9 +286,6 @@ export default {
   computed: {
     product() {
       return this.$store.state.product;
-    },
-    description() {
-      return this.$store.state.description;
     },
   },
   methods: {

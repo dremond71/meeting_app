@@ -59,7 +59,6 @@ const store = new Vuex.Store({
     chatMessages: [],
     connectedList: [],
     socketInfo: [],
-    infoBarMessage: '  ',
     sharingTemp: {
       shareStream: undefined,
       originalUserStream: undefined,
@@ -154,7 +153,6 @@ const store = new Vuex.Store({
       // and other participants appear at the top
       // of the array.
       state.connectedList.unshift(connectedItem);
-      state.infoBarMessage = `User ${connectedItem.id} has joined`;
     },
     updateConnected(state, connectedItem) {
       console.log(`updating id ${connectedItem.id} in store`);
