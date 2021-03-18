@@ -83,7 +83,6 @@ app.get('/videochat', (req, res) => {
 
   res.render('room', renderData);
 });
-
 io.on('connection', (socket) => {
   const socketID = socket.id;
 
@@ -197,4 +196,25 @@ io.on('connection', (socket) => {
     socket.to(roomId).broadcast.emit('user-stopping-share', userId);
   });
 });
+
+/**
+ * Some endpoints to help developer
+ * obtain and debug state information
+ * from each participant's store.
+ */
+const debugdata = {};
+app.post('/debugdata', (req, res) => {
+  const dataPost = req.body;
+  const userName = dataPost.userName;
+  debugdata[`${userName}`] = dataPost;
+
+  console.log(`${userName} posted debug data`);
+  res.send('debug data posted');
+});
+
+app.get('/debugdata', (req, res) => {
+  const dataAsString = JSON.stringify(debugdata, null, 2);
+  res.send(dataAsString);
+});
+
 server.listen(serverPort);
