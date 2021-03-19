@@ -379,6 +379,23 @@ const store = new Vuex.Store({
     addTheSocketInfo(context, data) {
       context.commit('addSocketInfo', data);
     },
+
+    async postDebugData(context, data) {
+      try {
+        const config = {
+          method: 'post',
+          url: 'https://free-meeting.twc-kungfu.com/debugdata',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: data,
+        };
+        const res = await axios(config);
+        console.log(res);
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 });
 
