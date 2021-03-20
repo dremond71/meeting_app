@@ -1,8 +1,11 @@
 import { playSound_ChatReceived } from './sounds.js';
+import Messages from './Messages.js';
 
 export default {
   name: 'ParticipantChat',
-  components: {},
+  components: {
+    Messages,
+  },
   template: `
   <div   class="w3-container w3-blue w3-center" style="width:100%;">
     <h2>Chat</h2>
@@ -16,9 +19,7 @@ export default {
     <button class="w3-button w3-round-xxlarge w3-light-blue w3-border-white" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
     <hr/>
     <label for="receivedText" class="w3-margin-top"><b>{{messagesTitle}}</b></label>
-    <textarea id="receivedText" name="receivedText" rows="16" style="width:100%;resize:none;" class="w3-margin-bottom w3-light-blue w3-border-white" readonly>
-       {{ theChatMessages }}
-    </textarea>
+    <Messages></Messages>
     <div class="w3-blue" style="height:80px;margin-bottom:10px;"></div>
   </div>`,
   data: function () {
