@@ -48,7 +48,10 @@ export default {
         // into the carousel.
         // all other participants show up in
         // main area (video grid)
-        originalArray = [this.$store.getters.myConnectedItem];
+        originalArray = [];
+        if (this.$store.getters.myConnectedItem) {
+          originalArray.push(this.$store.getters.myConnectedItem);
+        }
       }
 
       // need to break a long array into separate arrays of max length of maxContentLimit.

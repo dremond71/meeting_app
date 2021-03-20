@@ -26,7 +26,10 @@ export default {
       } else {
         // all by myself. there is no carousel
         // put me in the video grid.
-        originalArray = [this.$store.getters.myConnectedItem];
+        originalArray = [];
+        if (this.$store.getters.myConnectedItem) {
+          originalArray.push(this.$store.getters.myConnectedItem);
+        }
       }
 
       // need to break a long array into separate arrays of max length of 3.
