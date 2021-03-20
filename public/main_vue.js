@@ -15,24 +15,38 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
       );
       const sendersList = aPeer.call?.peerConnection?.getSenders();
       if (sendersList) {
+        let senderIndex = 1;
         sendersList.map((sender) => {
+          console.log(`  processing sender ${senderIndex++}`);
           if (sender.track.kind == 'audio') {
             if (
               mediaStream.getAudioTracks() &&
               mediaStream.getAudioTracks().length > 0
             ) {
+              console.log(`     REPLACING audio tracks`);
               sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+            } else {
+              console.log(`     NO audio tracks`);
             }
+          } else {
+            console.log(`     NO 'audio' sender.track.kind`);
           }
           if (sender.track.kind == 'video') {
             if (
               mediaStream.getVideoTracks() &&
               mediaStream.getVideoTracks().length > 0
             ) {
+              console.log(`     REPLACING video tracks`);
               sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+            } else {
+              console.log(`     NO video tracks`);
             }
+          } else {
+            console.log(`     NO 'video' sender.track.kind`);
           }
         });
+      } else {
+        console.log(`     NO sendersList`);
       }
     } //for
   } // there are peers

@@ -24,6 +24,7 @@ export default {
       data.socketID = this.connectedItem.socketID;
       data.streamExists = !!this.connectedItem.stream;
       data.callExists = !!this.connectedItem.call;
+      data.peersWithoutStream = this.$store.getters.peersWithNoStream;
 
       data.peers = this.$store.getters.everyoneButMe.map((person) => {
         const pd = {};
@@ -37,6 +38,9 @@ export default {
         pd.socketID = person.socketID;
         pd.streamExists = !!person.stream;
         pd.callExists = !!person.call;
+        pd.callConnectionId = person.call?.connectionId
+          ? person.call.connectionId
+          : 'dunno';
         return pd;
       });
 
