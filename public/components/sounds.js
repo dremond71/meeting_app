@@ -1,4 +1,17 @@
+import { isIOSDevice } from './ios_helper.js';
+
 function playSound(url, volumeLevel) {
+  //
+  // iOS won't execute code that plays a sound
+  // unless a user-touch event invoked the code.
+  // So, i've decided to not play ANY
+  // sounds (for events) at all on iOS devices.
+  // :)
+  //
+  if (isIOSDevice()) {
+    return;
+  }
+
   try {
     const myAudioElement = new Audio(url);
     myAudioElement.volume = volumeLevel;
