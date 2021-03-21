@@ -14,6 +14,7 @@ let peerjsCert = undefined;
 const peerjsHost = process.env.PEERJS_HOST || '/';
 const peerjsPort = process.env.PEERJS_PORT || '';
 const serverPort = process.env.SERVER_PORT || 3001;
+const debugOn = process.env.DEBUG || 'false';
 
 function createServer(theExpressApp, useHttps) {
   let server = undefined;
@@ -69,6 +70,7 @@ app.get('/videochat', (req, res) => {
     peerjsPort: peerjsPort,
     userName: userName,
     useHttps: `${httpsMode}`,
+    debugOn: `${debugOn}`,
   };
 
   if (httpsMode) {
@@ -203,18 +205,20 @@ io.on('connection', (socket) => {
  * from each participant's store.
  */
 const debugdata = {};
-app.post('/debugdata', (req, res) => {
-  const dataPost = req.body;
-  const userName = dataPost.userName;
-  debugdata[`${userName}`] = dataPost;
+if (debugOn === 'true') {
+  app.post('/debugdata', (req, res) => {
+    const dataPost = req.body;
+    const userName = dataPost.userName;
+    debugdata[`${userName}`] = dataPost;
 
-  console.log(`${userName} posted debug data`);
-  res.send('debug data posted');
-});
+    console.log(`${userName} posted debug data`);
+    res.send('debug data posted');
+  });
 
-app.get('/debugdata', (req, res) => {
-  const dataAsString = JSON.stringify(debugdata, null, 2);
-  res.send(dataAsString);
-});
+  app.get('/debugdata', (req, res) => {
+    const dataAsString = JSON.stringify(debugdata, null, 2);
+    res.send(dataAsString);
+  });
+}
 
 server.listen(serverPort);

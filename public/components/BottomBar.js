@@ -17,7 +17,7 @@ export default {
   },
   template: `
 <div class="w3-bar w3-center w3-blue w3-padding" style="position: fixed; bottom: 0; width: 100%;">
-  <MyPostDebugDataButton v-if="myConnectionExists" v-bind:connectedItem="myConnection"></MyPostDebugDataButton>
+  <MyPostDebugDataButton v-if="debugModeOn" v-bind:connectedItem="myConnection"></MyPostDebugDataButton>
   <MyAudioButton v-if="myConnectionExists" v-bind:connectedItem="myConnection"></MyAudioButton>
   <MyVideoButton v-if="myConnectionExists" v-bind:connectedItem="myConnection"></MyVideoButton>
   <MyShareButton v-if="myConnectionExists" v-bind:connectedItem="myConnection"></MyShareButton>
@@ -29,6 +29,9 @@ export default {
 
     myConnection() {
       return this.$store.getters.myConnectedItem;
+    },
+    debugModeOn() {
+      return this.myConnectionExists && DEBUG_ON === 'true';
     },
   },
 };
