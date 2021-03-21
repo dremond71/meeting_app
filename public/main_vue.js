@@ -341,7 +341,7 @@ const store = new Vuex.Store({
       console.log(
         `adding chat message id: '${data.id}' from: '${data.from}' to: '${data.to}' to store`
       );
-      state.chatMessages.push(data);
+      state.chatMessages.unshift(data);
     },
 
     addSocketInfo(state, data) {

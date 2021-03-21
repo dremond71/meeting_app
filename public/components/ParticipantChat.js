@@ -17,9 +17,8 @@ export default {
     <textarea id="sendText" name="sendText" v-model="messageToSend" rows="6"  class="w3-margin-top w3-light-blue w3-border-white" style="width:100%;resize:none;">
     </textarea>
     <button class="w3-button w3-round-xxlarge w3-light-blue w3-border-white" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
-    <hr/>
-    <label for="receivedText" class="w3-margin-top"><b>{{messagesTitle}}</b></label>
-    <Messages></Messages>
+    <hr v-if="thereAreMessages"/>
+    <Messages v-if="thereAreMessages"></Messages>
     <div class="w3-blue" style="height:80px;margin-bottom:10px;"></div>
   </div>`,
   data: function () {
@@ -30,12 +29,6 @@ export default {
     };
   },
   computed: {
-    messagesTitle() {
-      const chatMessages = this.$store.getters.allChatMessages;
-      return chatMessages.length > 0
-        ? `Messages (${chatMessages.length})`
-        : 'Messages';
-    },
     chatItems() {
       const listItems = [];
       const everyoneItem = {
@@ -67,18 +60,8 @@ export default {
     isDisabled() {
       return this.selected === '';
     },
-    theChatMessages() {
-      let messages = '';
-
-      const chatMessages = this.$store.getters.allChatMessages;
-      for (let i = chatMessages.length - 1; i >= 0; i--) {
-        const cm = chatMessages[i];
-
-        const thisMessage = `\nFrom: ${cm.from}\nTo  : ${cm.to}\n\n${cm.message}\n\n`;
-        messages += thisMessage;
-      }
-
-      return messages;
+    thereAreMessages() {
+      return this.$store.getters.allChatMessages.length > 0;
     },
   },
   methods: {
