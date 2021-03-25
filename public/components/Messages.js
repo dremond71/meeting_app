@@ -28,13 +28,12 @@ export default {
   data: function () {
     return {
       messageIndex: 0,
+      numberOfMessages: 1,
     };
   },
   computed: {
     messagesTitle() {
-      return this.theChatMessages.length > 0
-        ? `Messages (${this.theChatMessages.length})`
-        : 'Messages';
+      return `Messages (${this.theChatMessages.length})`;
     },
     theChatMessages() {
       return this.$store.getters.allChatMessages;
@@ -42,7 +41,23 @@ export default {
     theChatMessagesToShow() {
       // at the moment, I decided to only show 1
       // message at the time
-      return [this.$store.getters.allChatMessages[this.messageIndex]];
+
+      if (this.theChatMessages.length > this.numberOfMessages) {
+        this.numberOfMessages = this.theChatMessages.length;
+
+        // the number of chat messages has increased since
+        // this component was mounted
+
+        if (this.messageIndex !== 0) {
+          // if we were focused on an item further into the array
+          // when the size of the array changed, we need to bump
+          // up the index to say focused on the same item.
+          this.messageIndex++;
+        }
+      }
+
+      const message = this.theChatMessages[this.messageIndex];
+      return [message];
     },
     upDisabled() {
       return this.messageIndex === 0;
