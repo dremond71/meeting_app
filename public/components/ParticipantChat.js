@@ -58,7 +58,7 @@ export default {
       return listItems;
     },
     isDisabled() {
-      return this.selected === '';
+      return this.selected === '' || this.messageToSend.trim() === '';
     },
     thereAreMessages() {
       return this.$store.getters.allChatMessages.length > 0;
