@@ -176,6 +176,16 @@ export default {
 
       this.putChatMessageInStore(chatMessageData);
       playSound_ChatReceived();
+
+      //
+      // check if user sent message '@refresh-stream'
+      //
+      if (chatMessage.trim() === '@refresh-stream') {
+        //
+        // send my latest stream to this person
+        //
+        this.resendMyCurrentStreamAgain(userName);
+      }
     });
 
     /**
@@ -306,6 +316,9 @@ export default {
       this.$store.dispatch('addTheChatMessage', chatMessageData);
     },
 
+    resendMyCurrentStreamAgain(toThisUserName) {
+      this.$store.dispatch('resendMyCurrentStreamAgain', toThisUserName);
+    },
     broadcastMyStatusAttributes() {
       const myConnection = this.$store.getters.myConnectedItem;
 

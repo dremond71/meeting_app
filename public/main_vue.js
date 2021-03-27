@@ -336,6 +336,20 @@ const store = new Vuex.Store({
         socket.emit('stopping-share', myInfo.roomId, myInfo.id);
       }
     },
+    resendMyCurrentStream(state, someUserName) {
+      const myInfo = state.connectedList.find((item) => {
+        return item.isMe === true;
+      });
+
+      if (myInfo) {
+        const otherUser = state.connectedList.find((item) => {
+          return item.userName === someUserName;
+        });
+        if (otherUser) {
+          propagateNewStreamToOthers(myInfo.stream, [otherUser]);
+        }
+      }
+    },
 
     addChatMessage(state, data) {
       console.log(
@@ -392,6 +406,9 @@ const store = new Vuex.Store({
     },
     addTheSocketInfo(context, data) {
       context.commit('addSocketInfo', data);
+    },
+    resendMyCurrentStreamAgain(context, userName) {
+      context.commit('resendMyCurrentStream', userName);
     },
 
     async postDebugData(context, data) {
