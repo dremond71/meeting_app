@@ -3,6 +3,7 @@ const fs = require('fs');
 const https = require('https');
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
 
 const httpsMode = process.env.HTTPS_MODE === 'true';
 
@@ -43,6 +44,7 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(cors());
 
 // creates either an http or https server
 const server = createServer(app, httpsMode);
@@ -221,4 +223,5 @@ if (debugOn === 'true') {
   });
 }
 
+console.log(`server is listening on port ${serverPort}`);
 server.listen(serverPort);

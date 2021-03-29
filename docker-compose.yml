@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  my-meeting:
+    image: meeting-app:1.0
+    env_file: .env
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3001:3001
+  my-peerjs:
+    image: dremond71/peerjs-with-cors:1.0
+    env_file: peerjs-with-cors.env
+    ports:
+      - 3002:3002
