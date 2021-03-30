@@ -21,7 +21,14 @@
     "debug-public": "node --inspect-brk=9229 server.js",
     "start-ngrok-tunnel-peerjs": "start_ngrok_tunnel_peerjs_server.bat",
     "start-ngrok-tunnel-server": "start_ngrok_tunnel_server.bat",
-    "start-everything": "start_everything.bat"
+    "start-everything": "start_everything.bat",
+    "docker-compose-build": "docker-compose build",
+    "predocker-compose-up": "setenv_public.bat",
+    "docker-compose-up": "docker-compose up -d && docker-compose ps",
+    "docker-compose-down": "docker-compose down && docker-compose ps",
+    "predocker-compose-build-up": "setenv_public.bat",
+    "docker-compose-build-up": "docker-compose up -d --build && docker-compose ps",
+    "start-everything-docker-compose": "start_everything_docker_compose.bat"
   },
   "keywords": [],
   "author": "",
