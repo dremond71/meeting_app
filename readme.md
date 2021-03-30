@@ -7,6 +7,7 @@ Inspired by the YouTube tutorial [How To Create A Video Chat App With WebRTC](ht
 ![](pic3.png)
 ![](pic1.png)
 ![](pic2.png)
+![](pic4.png)
 
 ## Setup
 
