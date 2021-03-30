@@ -8,8 +8,8 @@ export default {
   },
   template: `
     <div>
-      <Carousel v-if="showCarousel"></Carousel>
       <ParticipantChat v-if="someoneToChatWith"></ParticipantChat>
+      <Carousel v-if="showCarousel"></Carousel>
     </div>
 `,
   computed: {

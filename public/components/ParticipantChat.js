@@ -7,7 +7,7 @@ export default {
     Messages,
   },
   template: `
-  <div   class="w3-container w3-blue w3-center" style="width:100%;">
+  <div class="w3-container w3-blue w3-center" style="width:100%;">
     <h2>Chat</h2>
     <label for="selectNames"><b>Send Message To:</b></label>
     <select v-model="selected" name="selectNames" class="form-select form-select-lg mb-3 w3-light-blue w3-border-white" aria-label=".form-select-lg example" style="width:100%">
@@ -19,7 +19,6 @@ export default {
     <button class="w3-button w3-round-xxlarge w3-light-blue w3-border-white" style="width:100%;" v-on:click="sendTheChat" v-bind:disabled="isDisabled">Send</button>
     <hr v-if="thereAreMessages"/>
     <Messages v-if="thereAreMessages"></Messages>
-    <div class="w3-blue" style="height:80px;margin-bottom:10px;"></div>
   </div>`,
   data: function () {
     return {

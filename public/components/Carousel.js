@@ -6,7 +6,7 @@ export default {
     CarouselWidget,
   },
   template: `
-<div class="w3-center w3-blue">
+<div class="w3-container w3-center w3-blue">
     <h2>Carousel</h2>
     <button class="w3-button w3-margin-top w3-margin-bottom" v-on:click="moveUp" v-bind:disabled="upDisabled">
         <i class="bi bi-arrow-up-circle-fill"></i>
@@ -15,6 +15,7 @@ export default {
     <button class="w3-button w3-margin-top w3-margin-bottom" v-on:click="moveDown" v-bind:disabled="downDisabled">
       <i class="bi bi-arrow-down-circle-fill"></i>
     </button>
+    <div class="w3-blue" style="height:80px;margin-bottom:10px;"></div>
 </div>
 `,
   data: function () {
