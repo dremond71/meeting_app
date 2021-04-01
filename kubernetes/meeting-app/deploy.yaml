@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meeting-app
+  labels:
+    app: meeting-app
+  namespace: meeting-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meeting-app
+  template:
+    metadata:
+      labels:
+        app: meeting-app
+    spec:
+      containers:
+        - name: meeting-app
+          image: meeting-app:1.0
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: meeting-app-cm
+                  key: port
+            - name: PEERJS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: meeting-app-cm
+                  key: peerjsHost
+            - name: HTTPS_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: meeting-app-cm
+                  key: httpsMode
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: meeting-app-cm
+                  key: debug

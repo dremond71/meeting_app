@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: peerjs-with-cors-service
+  namespace: peerjs-with-cors
+spec:
+  type: LoadBalancer
+  selector:
+    app: peerjs-with-cors
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002

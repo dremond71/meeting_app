@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peerjs-with-cors
+  labels:
+    app: peerjs-with-cors
+  namespace: peerjs-with-cors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: peerjs-with-cors
+  template:
+    metadata:
+      labels:
+        app: peerjs-with-cors
+    spec:
+      containers:
+        - name: peerjs-with-cors
+          image: dremond71/peerjs-with-cors:1.0
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: peerjs-with-cors-cm
+                  key: port

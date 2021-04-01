@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: peerjs-with-cors-cm
+  namespace: peerjs-with-cors
+data:
+  port: '3002'

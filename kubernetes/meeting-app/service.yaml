@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: meeting-app-service
+  namespace: meeting-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: meeting-app
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001

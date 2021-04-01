@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: meeting-app-cm
+  namespace: meeting-app
+data:
+  port: '3001'
+  peerjsHost: 'free-meeting2.twc-kungfu.com'
+  httpsMode: 'false'
+  debug: 'false'
