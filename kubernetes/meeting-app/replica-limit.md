@@ -32,3 +32,19 @@ So, based on this, it is best to set `replicas` to 1.
 Or perhaps I should read this workaround:
 
 https://github.com/socketio/socket.io/issues/3539
+
+https://stackoverflow.com/questions/54253752/how-can-i-enable-session-affinity-by-client-ip-on-a-kubernetes-loadbalancer-in-g
+
+https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+
+On the service, I tried
+
+sessionAffinity: ClientIP
+
+it didn't work.
+
+Then I tried:
+
+externalTrafficPolicy: Local
+
+it didn't work.

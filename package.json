@@ -28,7 +28,10 @@
     "docker-compose-down": "docker-compose down && docker-compose ps",
     "predocker-compose-build-up": "setenv_public.bat",
     "docker-compose-build-up": "docker-compose up -d --build && docker-compose ps",
-    "start-everything-docker-compose": "start_everything_docker_compose.bat"
+    "start-everything-docker-compose": "start_everything_docker_compose.bat",
+    "list-pods": "list-pods.bat",
+    "show-pod-logs": "show-pod-logs.bat",
+    "start-everything-kubernetes": "start_everything_kubernetes.bat"
   },
   "keywords": [],
   "author": "",
