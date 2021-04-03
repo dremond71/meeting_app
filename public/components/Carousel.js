@@ -42,7 +42,18 @@ export default {
       // when someone is sharing, everyone shows up
       // in the carousel
       if (this.$store.getters.somebodySharing) {
-        originalArray = this.$store.getters.connected;
+        // always place me at the top of the carousel
+        // for ease of determining of what my camera sees.
+
+        // make a duplicate array so we don't modify the array
+        // in the store
+        const duplicateArray = [...this.$store.getters.connected];
+        // I am always bottom of array
+        // so 'pop' me out
+        const me = duplicateArray.pop();
+        // create an array with me at the front, and everyone
+        // else after me
+        originalArray = [me, ...duplicateArray];
       } else {
         // when noone is sharing, only I get put
         // into the carousel.
