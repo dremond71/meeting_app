@@ -17,8 +17,11 @@ export default {
     theClasses() {
       return `w3-bar-item w3-right ${this.notifyColor}`;
     },
+    someoneToChatWith() {
+      return this.$store.getters.everyoneButMe.length > 0;
+    },
     thereAreMessages() {
-      return this.chatMessageCount > 0;
+      return this.chatMessageCount > 0 && this.someoneToChatWith;
     },
     chatMessageCount() {
       const latestCount = this.$store.getters.allChatMessages.length;
