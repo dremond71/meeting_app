@@ -5,9 +5,16 @@ export default {
   components: {},
   template: `
 <div class="w3-center w3-light-blue">
-    <p class="w3-center">{{whoIsSharing}}</p>
-       <video id="shared" v-bind:playsinline="isAnIOSDevice"></video>
-       <p style="height:100px;">  </p>
+    <p align="center"><b>{{whoIsSharing}}</b></p>
+    <table align="center">
+     <tr>
+       <td>Zoom Contols:</td><td><button class="w3-button w3-round-xxlarge w3-blue" v-on:click="zoomIn">+</button></td><td><button class="w3-button w3-round-xxlarge w3-blue" v-on:click="zoomOut">-</button></td><td><button class="w3-button w3-round-xxlarge w3-blue" v-on:click="resetZoom">Reset</button></td>
+     </tr>
+    </table>
+    <div style="overflow:auto;height:100%;width:100%;align-content:center;">
+        <video id="shared" v-bind:playsinline="isAnIOSDevice" v-bind:style="zoomStyle"></video>
+    </div>
+    <p style="height:100px;">  </p>
 </div>
 `,
   mounted() {
@@ -18,9 +25,15 @@ export default {
     return {
       mounted: false,
       videoMetaDataListener: undefined,
+      originalZoom: 75,
+      zoom: 75,
+      zoomFactor: 10,
     };
   },
   computed: {
+    zoomStyle() {
+      return `height:${this.zoom}%;width:${this.zoom}%;margin:0;padding:0;`;
+    },
     isAnIOSDevice() {
       return isIOSDevice();
     },
@@ -34,6 +47,17 @@ export default {
     },
   },
   methods: {
+    resetZoom() {
+      this.zoom = this.originalZoom;
+    },
+    zoomIn() {
+      this.zoom += this.zoomFactor;
+    },
+    zoomOut() {
+      if (this.zoom - this.zoomFactor > 0) {
+        this.zoom -= this.zoomFactor;
+      }
+    },
     setVideoSrc() {
       if (this.connectedItem) {
         // find the video element in the DOM

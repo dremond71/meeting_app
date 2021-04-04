@@ -8,8 +8,8 @@ export default {
     ShareScreen,
   },
   template: `
-<div>
-    <ShareScreen v-if="someoneSharing" v-bind:connectedItem="sharedItem"></ShareScreen>
+<div v-if="someoneSharing">
+    <ShareScreen v-bind:connectedItem="sharedItem"></ShareScreen>
 </div>
 `,
   computed: {
@@ -27,6 +27,4 @@ export default {
       return this.$store.getters.connected;
     },
   },
-
-  // <Carousel v-if="showCarousel" v-bind:connectedItems="itemsForCarousel"></Carousel>
 };
