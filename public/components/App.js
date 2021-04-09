@@ -222,6 +222,12 @@ export default {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
+          if (!stream) {
+            throw new Error(
+              'navigator.mediaDevices.getUserMedia({ video: true, audio: true }) returned a null stream :('
+            );
+          }
+
           this.myConnection.stream = stream;
           this.myConnection.isMe = true; // mutes my video; even though muted=true doesn't show in video HTML element ;)
           this.myConnection.audioEnabled = true;
@@ -289,6 +295,13 @@ export default {
               );
             }, 2000);
           });
+        })
+        .catch((error) => {
+          // figuring out WHY a person's computer won't allow them to have
+          // a video or microphone feed is difficult.
+          // let's display the error to the user
+          // to help with debugging their problem
+          alert(error);
         });
       // END MEDIA
     });
