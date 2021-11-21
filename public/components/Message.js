@@ -1,3 +1,4 @@
+import { anchorAnyURLs } from './url_helper.js';
 export default {
   name: 'Message',
   components: {},
@@ -13,7 +14,7 @@ export default {
           <td>{{toValue}}</td>
         </tr>
       </table>
-      <p>{{messageValue}}</p>
+      <p v-html="messageValue"></p>
   </div>
   `,
   props: ['message'],
@@ -25,7 +26,7 @@ export default {
       return this.message.to;
     },
     messageValue() {
-      return this.message.message;
+      return anchorAnyURLs(this.message.message);
     },
     showCurrentMessageTitle() {
       return this.reversedChatMessages.length > 1;
