@@ -9,6 +9,9 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
     // this should be sharing stream
     const mediaStream = newStream;
 
+    // ran into problems where sound is lost as soon as I start sharing a screen.
+    // found this : https://stackoverflow.com/questions/42825338/webrtc-change-video-stream-in-the-middle-of-communication
+    //
     for (const aPeer of peersListExcludingMe) {
       console.log(
         `  adjusting stream for user: ${aPeer.userName} (${aPeer.id})`
@@ -18,31 +21,11 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
         let senderIndex = 1;
         sendersList.map((sender) => {
           console.log(`  processing sender ${senderIndex++}`);
-          if (sender.track.kind == 'audio') {
-            if (
-              mediaStream.getAudioTracks() &&
-              mediaStream.getAudioTracks().length > 0
-            ) {
-              console.log(`     REPLACING audio tracks`);
-              sender.replaceTrack(mediaStream.getAudioTracks()[0]);
-            } else {
-              console.log(`     NO audio tracks`);
-            }
-          } else {
-            console.log(`     NO 'audio' sender.track.kind`);
-          }
-          if (sender.track.kind == 'video') {
-            if (
-              mediaStream.getVideoTracks() &&
-              mediaStream.getVideoTracks().length > 0
-            ) {
-              console.log(`     REPLACING video tracks`);
-              sender.replaceTrack(mediaStream.getVideoTracks()[0]);
-            } else {
-              console.log(`     NO video tracks`);
-            }
-          } else {
-            console.log(`     NO 'video' sender.track.kind`);
+          const screenVideoTrack = mediaStream.getVideoTracks()[0];
+          try {
+            sender.replaceTrack(screenVideoTrack);
+          } catch (error) {
+            console.log('Error replacing video track during share: ' + error);
           }
         });
       } else {
