@@ -10,6 +10,8 @@ import {
   playSound_ChatReceived,
 } from './sounds.js';
 
+import { getCurrentDateInMilliseconds } from './uuid_helper.js';
+
 export default {
   name: 'App',
   components: {
@@ -50,10 +52,12 @@ export default {
         userName: undefined,
         roomId: undefined,
         stream: undefined,
+        shareStream: undefined,
         isMe: false,
         audioEnabled: false,
         videoEnabled: false,
         sharing: false,
+        sharingUUID: getCurrentDateInMilliseconds(),
         call: undefined,
         socketID: undefined,
       },
@@ -229,6 +233,7 @@ export default {
           }
 
           this.myConnection.stream = stream;
+          this.myConnection.sharingUUID = getCurrentDateInMilliseconds();
           this.myConnection.isMe = true; // mutes my video; even though muted=true doesn't show in video HTML element ;)
           this.myConnection.audioEnabled = true;
           this.myConnection.videoEnabled = true;
@@ -427,10 +432,12 @@ export default {
         userName: '...',
         roomId: this.myConnection.roomId,
         stream: userStream,
+        shareStream: undefined,
         isMe: false,
         audioEnabled: true,
         videoEnabled: true,
         sharing: false,
+        sharingUUID: getCurrentDateInMilliseconds(),
         call: call,
         socketID: undefined,
       };
@@ -457,10 +464,12 @@ export default {
         userName: userName,
         roomId: this.myConnection.roomId,
         stream: undefined,
+        shareStream: undefined,
         isMe: false,
         audioEnabled: true,
         videoEnabled: true,
         sharing: false,
+        sharingUUID: getCurrentDateInMilliseconds(),
         call: call,
         socketID: socketID,
       };
