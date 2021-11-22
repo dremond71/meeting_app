@@ -21,8 +21,10 @@ export default {
       data.audioEnabled = this.connectedItem.audioEnabled;
       data.videoEnabled = this.connectedItem.videoEnabled;
       data.sharing = this.connectedItem.sharing;
+      data.sharingUUID = this.connectedItem.sharingUUID;
       data.socketID = this.connectedItem.socketID;
       data.streamExists = !!this.connectedItem.stream;
+      data.shareStreamExists = !!this.connectedItem.shareStream;
       data.callExists = !!this.connectedItem.call;
       data.peersWithoutStream = this.$store.getters.peersWithNoStream;
 
@@ -35,8 +37,10 @@ export default {
         pd.audioEnabled = person.audioEnabled;
         pd.videoEnabled = person.videoEnabled;
         pd.sharing = person.sharing;
+        pd.sharingUUID = person.sharingUUID;
         pd.socketID = person.socketID;
         pd.streamExists = !!person.stream;
+        pd.shareStreamExists = !!person.shareStream;
         pd.callExists = !!person.call;
         pd.callConnectionId = person.call?.connectionId
           ? person.call.connectionId

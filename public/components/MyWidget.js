@@ -51,7 +51,9 @@ export default {
       // return empty string
       // we are using this computed function to
       // trigger a change to the video element
-      return this.connectedItem.sharing ? '' : '';
+      return this.connectedItem.sharing || this.connectedItem.sharingUUID
+        ? ''
+        : '';
     },
     userName() {
       return this.connectedItem.userName;

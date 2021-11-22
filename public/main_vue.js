@@ -1,4 +1,5 @@
 import App from './components/App.js';
+import { getCurrentDateInMilliseconds } from './components/uuid_helper.js';
 
 function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
   console.log('\n\npropagateNewStreamToOthers(): start');
@@ -6,12 +7,13 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
   if (peersListExcludingMe && peersListExcludingMe.length > 0) {
     console.log(`There are peers to contact : ${peersListExcludingMe.length}`);
 
-    // this should be sharing stream
+    // the newStream can be my 'stream' or 'shareStream'
     const mediaStream = newStream;
 
-    // ran into problems where sound is lost as soon as I start sharing a screen.
-    // found this : https://stackoverflow.com/questions/42825338/webrtc-change-video-stream-in-the-middle-of-communication
-    //
+    // With my older code, I ran into problems where sound is lost as soon as I start sharing a screen.
+    // found this article : https://stackoverflow.com/questions/42825338/webrtc-change-video-stream-in-the-middle-of-communication
+    // Given the current stream in a connection with a peer, don't replace the entire stream,
+    // simply replace the video track.
     for (const aPeer of peersListExcludingMe) {
       console.log(
         `  adjusting stream for user: ${aPeer.userName} (${aPeer.id})`
@@ -56,10 +58,6 @@ const store = new Vuex.Store({
     chatMessages: [],
     connectedList: [],
     socketInfo: [],
-    sharingTemp: {
-      shareStream: undefined,
-      originalUserStream: undefined,
-    },
   },
   getters: {
     myCurrentStream: (state) => {
@@ -244,19 +242,15 @@ const store = new Vuex.Store({
             // delete their stream
             if (connectionItem.stream) {
               closeStream(connectionItem.stream);
+              connectionItem.stream = undefined;
             }
 
-            // clean up a temp object which may contain
-            // their original stream and possibly a
-            // sharing stream
-            if (connectionItem.sharingTemp) {
-              if (connectionItem.sharingTemp.originalUserStream) {
-                closeStream(connectionItem.sharingTemp.originalUserStream);
-              }
-              if (connectionItem.sharingTemp.shareStream) {
-                closeStream(connectionItem.sharingTemp.shareStream);
-              }
+            // delete their shareStream
+            if (connectionItem.shareStream) {
+              closeStream(connectionItem.shareStream);
+              connectionItem.shareStream = undefined;
             }
+
             connectionItem = undefined;
           } catch (error) {
             console.log(error);
@@ -273,11 +267,13 @@ const store = new Vuex.Store({
 
       if (myInfo) {
         myInfo.sharing = true;
-        // save original webcam/microphone stream
-        state.sharingTemp.originalUserStream = myInfo.stream;
-        // store my shared stream here
-        state.sharingTemp.shareStream = shareStream;
-        myInfo.stream = shareStream;
+
+        // change this field
+        // in hopes of making my video element notice a change
+        // so it repaints itself.
+        myInfo.sharingUUID = getCurrentDateInMilliseconds();
+
+        myInfo.shareStream = shareStream;
 
         // need to call all peers to replace my existing stream
         //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
@@ -285,7 +281,7 @@ const store = new Vuex.Store({
           return item.isMe === false;
         });
 
-        propagateNewStreamToOthers(myInfo.stream, peersListExcludingMe);
+        propagateNewStreamToOthers(myInfo.shareStream, peersListExcludingMe);
 
         socket.emit('starting-share', myInfo.roomId, myInfo.id);
       }
@@ -297,16 +293,14 @@ const store = new Vuex.Store({
 
       if (myInfo) {
         myInfo.sharing = false;
-        // restore my webcam/mic stream
-        myInfo.stream = state.sharingTemp.originalUserStream;
-        state.sharingTemp.originalUserStream = undefined;
-        try {
-          const tracks = state.sharingTemp.shareStream.getTracks();
-          tracks.forEach((track) => track.stop());
-        } catch (err) {
-          console.log(`Error closing stream`);
-        }
-        state.sharingTemp.shareStream = undefined;
+
+        closeStream(myInfo.shareStream);
+        myInfo.shareStream = undefined;
+
+        // change this field
+        // in hopes of making my video element notice a change
+        // so it repaints itself.
+        myInfo.sharingUUID = getCurrentDateInMilliseconds();
 
         // need to call all peers to replace my existing stream
         //https://dev.to/arjhun777/video-chatting-and-screen-sharing-with-react-node-webrtc-peerjs-18fg
@@ -329,7 +323,11 @@ const store = new Vuex.Store({
           return item.userName === someUserName;
         });
         if (otherUser) {
-          propagateNewStreamToOthers(myInfo.stream, [otherUser]);
+          if (myInfo.sharing) {
+            propagateNewStreamToOthers(myInfo.stream, [otherUser]);
+          } else {
+            propagateNewStreamToOthers(myInfo.shareStream, [otherUser]);
+          }
         }
       }
     },
