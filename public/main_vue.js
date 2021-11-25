@@ -21,11 +21,15 @@ function propagateNewStreamToOthers(newStream, peersListExcludingMe) {
         let senderIndex = 1;
         sendersList.map((sender) => {
           console.log(`  processing sender ${senderIndex++}`);
-          const screenVideoTrack = mediaStream.getVideoTracks()[0];
-          try {
-            sender.replaceTrack(screenVideoTrack);
-          } catch (error) {
-            console.log('Error replacing video track during share: ' + error);
+          // if (sender.track.kind == 'audio') {
+          //   if (mediaStream.getAudioTracks().length > 0) {
+          //     sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+          //   }
+          // }
+          if (sender.track.kind == 'video') {
+            if (mediaStream.getVideoTracks().length > 0) {
+              sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+            }
           }
         });
       } else {
