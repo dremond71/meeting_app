@@ -219,6 +219,10 @@ if (debugOn === 'true') {
 
   app.get('/debugdata', (req, res) => {
     const dataAsString = JSON.stringify(debugdata, null, 2);
+
+    // Explicitly set the content-type so the browser knows it's JSON
+    res.setHeader('Content-Type', 'application/json');
+
     res.send(dataAsString);
   });
 }

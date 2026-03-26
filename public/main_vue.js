@@ -400,16 +400,19 @@ const store = new Vuex.Store({
 
     async postDebugData(context, data) {
       try {
+        // apis hosted on same host and port as the web ui,
+        // so we can simply use '/debugdata' as the url
+        console.log(`Calling POST /debugdata`);
         const config = {
           method: 'post',
-          url: 'https://free-meeting.twc-kungfu.com/debugdata',
+          url: '/debugdata',
           headers: {
             'Content-Type': 'application/json',
           },
           data: data,
         };
         const res = await axios(config);
-        console.log(res);
+        console.log(res.data);
       } catch (err) {
         console.log(err);
       }

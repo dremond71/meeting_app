@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "resource-monitor-windows10": "Perfmon /Res",
+    "check-server-certificates" :"openssl x509 -enddate -noout -in ./certs/cert.pem",
+    "check-peerjs-certificates" :"openssl x509 -enddate -noout -in ./certs/peerjs/cert.pem",
     "start-peerjs-local": "peerjs --port 3002 --sslkey ./certs/peerjs/key.pem --sslcert ./certs/peerjs/cert.pem",
     "start-peerjs-public": "peerjs --port 3002",
     "prestart-local": "setenv_local.bat",
