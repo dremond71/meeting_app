@@ -18,6 +18,8 @@ export default {
   },
   methods: {
     getAudioTrack() {
+      // we only care about connectedItem.stream here,
+      // not connectedItem.shareStream (since audio doesn't seem to work anyways)
       return this.connectedItem.stream.getAudioTracks()[0];
     },
 
@@ -28,7 +30,7 @@ export default {
     toggleAudio() {
       //
       // I can only affect the enabled state of my stream on my end, not anyone else's.
-      // The toggle button is disabled if this widget is for someone else.
+      // The toggle button is disabled if this  widget is for someone else.
       //
       const audioTrack = this.getAudioTrack();
       audioTrack.enabled = !audioTrack.enabled;
